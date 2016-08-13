@@ -5,6 +5,7 @@ var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
+var spacebar = 32;
 
 game = {
 
@@ -101,16 +102,16 @@ game = {
   		var found = false;
   		var y = 0;
   		while (y < 12) {
-  			if (board[x][y] != 0) {
+  			if (game.board[x][y] != 0) {
   				found = true;
   			} else if (found) {
   				var start = y;
-  				while (board[x][y] == 0 && y < 12) {
+  				while (game.board[x][y] == 0 && y < 12) {
   					y++;
   				}
-  				board[x].splice(start, y - start);
+  				game.board[x].splice(start, y - start);
   				for (var i = 0; i < y - start; i++) {
-  					board[x].unshift(0);
+  					game.board[x].unshift(0);
   				}
   			}
   			y++;
@@ -146,10 +147,29 @@ blob = {
     if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
+    else if (key == spacebar) blob.drop();
   },
 
   draw: function() {
     game.drawBox(parseInt(blob.x), parseInt(blob.y), blob.size, blob.color);
+  },
+
+  drop: function() {
+  	var col = Math.floor(blob.x/blob.size);
+  	for (var i = 0; i < 12; i++) {
+  		if (game.board[col][i] != 0) {
+  			board[col][i-1] = blob.color;
+			// Check whether a chain is complete
+			if (game.checkConnect(row, col) >= 4) {
+				// Chain is complete
+				game.deleteChain(row, col);
+				game.fall();
+			}
+			// drop a new block
+			blob.init();
+			return;
+  		}
+  	}
   }
 };
 
@@ -191,7 +211,6 @@ function loop() {
       	game.fall();
       }
       // drop a new block
-      console.log("Resetting");
       blob.init();
     }
 
