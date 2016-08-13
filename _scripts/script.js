@@ -111,16 +111,16 @@ game = {
   		var found = false;
   		var y = 0;
   		while (y < 12) {
-  			if (board[x][y] != 0) {
+  			if (game.board[x][y] != 0) {
   				found = true;
   			} else if (found) {
   				var start = y;
-  				while (board[x][y] == 0 && y < 12) {
+  				while (game.board[x][y] == 0 && y < 12) {
   					y++;
   				}
-  				board[x].splice(start, y - start);
+  				game.board[x].splice(start, y - start);
   				for (var i = 0; i < y - start; i++) {
-  					board[x].unshift(0);
+  					game.board[x].unshift(0);
   				}
   			}
   			y++;
