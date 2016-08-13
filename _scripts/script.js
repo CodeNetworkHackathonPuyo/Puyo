@@ -19,11 +19,11 @@ game = {
     game.message = null;
     game.score = 0;
     game.fps = 8;
-    game.board = new Array(6);
-    for (var i = 0; i < 6; i++) {
-      game.board[i] = new Array(12);
-      for (var j = 0; j < 12; j++) {
-        game.board[j][i] = 0;
+    game.board = new Array(12);
+    for (var i = 0; i < 12; i++) {
+      game.board[i] = new Array(6);
+      for (var j = 0; j < 6; j++) {
+        game.board[i][j] = 0;
       }
     }
     blob.init();
@@ -39,7 +39,7 @@ game = {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + size, y);
-    ctx.lineTo(x + size, y + size);
+    ctx.lineTo(x + size, y + size));
     ctx.lineTo(x, y + size);
     ctx.closePath();
     ctx.fill();
@@ -50,11 +50,11 @@ game = {
   },
 
   draw: function() {
-    for (var row = 0; col < 6; row++) {
-      for (var col = 0; row < 12; col++) {
-        if (game.board[col][row] != 0) {
-          game.drawBox(col * canvas.width/6, row * canvas.height/12, blob.size,
-            colorArray[game.board[col][row]]);
+    for (var row = 0; row < 12; row++) {
+      for (var col = 0; col < 6; col++) {
+        if (game.board[row][col] != 0) {
+          game.drawBox(col * blob.size, row * blob.size, blob.size,
+            colorArray[game.board[row][col]]);
         }
       }
     }
@@ -64,8 +64,8 @@ game = {
   * to the initial argument to this function. Seen represents already checked cells,
   * to prevent loops */
   checkConnect: function(row, column, seen=[]) {
-    colour = game.board[column][row];
-    if (colour == 0) {
+    color = game.board[row][column];
+    if (color == 0) {
       return 0;
     }
     seen.push({"row": row, "col": column});
@@ -78,7 +78,7 @@ game = {
       if (row + rowMod > 11 || row + rowMod < 0 || column + colMod > 5 || column + colMod < 0) {
       	continue;
       }
-      if (game.board[column + colMod][row + rowMod] == colour &&
+      if (game.board[row + rowMod][column + colMod] == color &&
         seen.filter(function(e) {return e.row == row + rowMod && e.col == column + colMod;}).length == 0) {
         sum += game.checkConnect(row + rowMod, column + colMod, seen);
       }
@@ -87,8 +87,8 @@ game = {
   },
 
   deleteChain: function(row, col) {
-    colour = game.board[col][row];
-    game.board[col][row] = 0;
+    color = game.board[row][col];
+    game.board[row][col] = 0;
   	var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
       var rowMod = i < 2 ? offsets[i] : 0;
@@ -96,7 +96,7 @@ game = {
       if (row + rowMod > 11 || row + rowMod < 0 || col + colMod > 5 || col + colMod < 0) {
       	continue;
       }
-      if (game.board[col + colMod][row + rowMod] == colour) {
+      if (game.board[row + rowMod][col + colMod] == color) {
       	game.deleteChain(row + rowMod, col + colMod);
       }
     }
@@ -123,12 +123,9 @@ blob = {
     key = e.keyCode;
     console.log(key);
 
-    var row = Math.floor(blob.y/(canvas.height/12));
-    var col = Math.floor(blob.x/(canvas.width/6));
-    console.log(row + " " + col);
-    if (key == leftKey && blob.x > blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
-    else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
-    else if (key == downKey && blob.y < canvas.height - blob.size/2) blob.y += blob.size/10;
+    if (key == leftKey && blob.x >= blob.size) blob.x -= blob.size;
+    else if (key == rightKey && blob.x < canvas.width - blob.size) blob.x += blob.size;
+    else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
   },
 
   draw: function() {
@@ -156,16 +153,16 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-    var row = Math.floor(blob.y/(canvas.height/12));
+    var row = Math.floor(blob.y/(canvas.height/12) - 0.5);
     var col = Math.floor(blob.x/(canvas.width/6));
     if ((row == 11 ||
-      game.board[col][row + 1] == 0) &&
-      blob.y < canvas.height - blob.size) {
+      game.board[row + 1][col] == 0) &&
+      blob.y < canvas.height - blob.size/2) {
       // There is nothing below the blob
       blob.y += blob.size/50;
     } else {
       // Add the location to the board
-      game.board[col][row] = colorArray.indexOf(blob.color);
+      game.board[row][col] = colorArray.indexOf(blob.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
       	// Chain is complete
