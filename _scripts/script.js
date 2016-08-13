@@ -39,7 +39,7 @@ game = {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + size, y);
-    ctx.lineTo(x + size, y + size));
+    ctx.lineTo(x + size, y + size);
     ctx.lineTo(x, y + size);
     ctx.closePath();
     ctx.fill();
@@ -123,8 +123,9 @@ blob = {
     key = e.keyCode;
     console.log(key);
 
-    var row = blob.y/(canvas.height/12);
-    var col = blob.x/(canvas.width/6);
+    var row = Math.floor(blob.y/(canvas.height/12));
+    var col = Math.floor(blob.x/(canvas.width/6));
+    console.log(row + " " + col);
     if (key == leftKey && blob.x > blob.size && game.board[row][col - 1] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[row][col + 1] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size/2) blob.y += blob.size/10;
@@ -155,11 +156,11 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-    var row = Math.floor(blob.y/(canvas.height/12) - 0.5);
+    var row = Math.floor(blob.y/(canvas.height/12));
     var col = Math.floor(blob.x/(canvas.width/6));
     if ((row == 11 ||
       game.board[row + 1][col] == 0) &&
-      blob.y < canvas.height - blob.size/2) {
+      blob.y < canvas.height - blob.size) {
       // There is nothing below the blob
       blob.y += blob.size/50;
     } else {
