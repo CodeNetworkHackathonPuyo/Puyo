@@ -19,10 +19,10 @@ game = {
     game.message = null;
     game.score = 0;
     game.fps = 8;
-    game.board = new Array(HEIGHT);
-    for (var i = 0; i < HEIGHT; i++) {
-      game.board[i] = new Array(WIDTH);
-      for (var j = 0; j < WIDTH; j++) {
+    game.board = new Array(12);
+    for (var i = 0; i < 12; i++) {
+      game.board[i] = new Array(6);
+      for (var j = 0; j < 6; j++) {
         game.board[i][j] = 0;
       }
     }
