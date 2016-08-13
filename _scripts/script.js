@@ -76,7 +76,7 @@ game = {
     for (var i = 0; i < 4; i++) {
       var rowMod = i < 2 ? offsets[i] : 0;
       var colMod = i < 2 ? 0 : offsets[i-2];
-      if (board[row + rowMod][column + colMod] == colour && 
+      if (game.board[row + rowMod][column + colMod] == colour && 
         !(seen.indexOf((row + rowMod, column + colMod)) > -1)) {
         sum += checkConnect(row + rowMod, column + colMod, seen);
       }
@@ -85,13 +85,13 @@ game = {
   },
 
   deleteChain: function(row, col) {
-    colour = board[row][col];
-    board[row][col] = 0;
+    colour = game.board[row][col];
+    game.board[row][col] = 0;
   	var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
       var rowMod = i < 2 ? offsets[i] : 0;
       var colMod = i < 2 ? 0 : offsets[i-2];
-      if (board[row + rowMod][col + colMod] == colour && 
+      if (game.board[row + rowMod][col + colMod] == colour && 
         !(seen.indexOf((row + rowMod, col + colMod)) > -1)) {
       	deleteChain(row + rowMod, col + colMod);
       }
