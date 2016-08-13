@@ -54,7 +54,7 @@ game = {
       for (var col = 0; col < 6; col++) {
         if (game.board[row][col] != 0) {
           game.drawBox((col + 0.5) * canvas.width/6, (row + 0.5) * canvas.height/12, canvas.width/6,
-            Object.keys(ColorsEnum)[game.board[row][col]]);
+            colorArray[game.board[row][col]]);
         }
       }
     }
@@ -104,7 +104,6 @@ game = {
 
 };
 
-var ColorsEnum = Object.freeze({"empty": 0, "blue": 1, "red": 2, "green": 3, "yellow": 4, "purple": 5});
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
 blob = {
@@ -113,7 +112,6 @@ blob = {
   x: null,
   y: null,
   color: colorArray[Math.floor(Math.random() * colorArray.length)],
-  colorEnum: ColorsEnum.green,
 
   init: function() {
     blob.color = colorArray[Math.floor(Math.random() * colorArray.length)];
@@ -164,7 +162,7 @@ function loop() {
       blob.y += blob.size/50;
     } else {
       // Add the location to the board
-      game.board[row][col] = blob.colorEnum;
+      game.board[row][col] = colorArray.indexOf(blob.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
       	// Chain is complete
