@@ -74,7 +74,10 @@ game = {
       return 0;
     }
     seen.push({"row": row, "col": column});
-    console.log(seen);
+    console.log("checking " + row + " " + column);
+    for (var i = 0; i < seen.length; i++) {
+    	console.log(seen[i]);
+    }
     sum = 1;
     var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
