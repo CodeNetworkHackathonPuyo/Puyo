@@ -18,7 +18,7 @@ game = {
   board: null,
 
   start: function() {
-    $(document).off('click', game.start);
+    $(".retry").off('click', game.start);
     game.over = false;
     game.message = null;
     game.score = 0;
@@ -206,7 +206,7 @@ function loop() {
       game.board[col][row + 1] == 0) &&
       blob.y < canvas.height - blob.size) {
       // There is nothing below the blob
-      blob.y += blob.size/50;
+      blob.y += blob.size/10;
     } else {
       // Add the location to the board
       console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
