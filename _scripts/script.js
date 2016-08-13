@@ -12,12 +12,20 @@ game = {
   fps: 8,
   over: false,
   message: null,
+  board: null,
 
   start: function() {
     game.over = false;
     game.message = null;
     game.score = 0;
     game.fps = 8;
+    game.board = new Array(HEIGHT);
+    for (var i = 0; i < HEIGHT; i++) {
+      game.board[i] = new Array(WIDTH);
+      for (var j = 0; j < WIDTH; j++) {
+        game.board[i][j] = 0;
+      }
+    }
     blob.init();
   },
 
@@ -27,6 +35,7 @@ game = {
   },
 
   drawBox: function(x, y, size, color) {
+    console.log(x + " " + y + " " + color);
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(x - (size / 2), y - (size / 2));
@@ -39,9 +48,22 @@ game = {
 
   resetCanvas: function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  },
+
+  draw: function() {
+    for (var row = 0; row < 12; row++) {
+      for (var col = 0; col < 6; col++) {
+        if (game.board[row][col] != 0) {
+          game.drawBox((col + 0.5) * canvas.width/6, (row + 0.5) * canvas.height/12, canvas.width/6,
+            Object.keys(ColorsEnum)[game.board[row][col]]);
+        }
+      }
+    }
   }
 
 };
+
+var ColorsEnum = Object.freeze({"empty": 0, "blue": 1, "red": 2, "green": 3, "yellow": 4, "purple": 5});
 
 blob = {
 
@@ -49,6 +71,7 @@ blob = {
   x: null,
   y: null,
   color: '#0F0',
+  colorEnum: ColorsEnum.green,
 
   init: function() {
     blob.x = canvas.width / 2 + blob.size / 2;
@@ -76,6 +99,7 @@ function init() {
 
     game.start();
     blob.draw();
+    game.draw();
 
 }
 
@@ -83,19 +107,33 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame;
 
+/* Every tick, the block currently falling should
+ * move one square further down and check for collision */
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-
-    if (blob.y < canvas.height - blob.size/2) blob.y += blob.size/50;
+    if ((Math.floor(blob.y/(canvas.height/12) - 0.5) == 11 || 
+      game.board[Math.floor(blob.y/(canvas.height/12) - 0.5) + 1][Math.floor(blob.x/(canvas.width/6))] == 0) && 
+      blob.y < canvas.height - blob.size/2) {
+      // There is nothing below the blob
+      blob.y += blob.size/50;
+    } else {
+      // Add the location to the board
+      game.board[Math.floor(blob.y/(canvas.height/12))][Math.floor(blob.x/(canvas.width/6))] = blob.colorEnum;
+      // drop a new block
+      console.log("Resetting");
+      blob.init();
+    }
 
     blob.draw();
+    game.draw();
   }
   setTimeout(function() {
     requestAnimationFrame(loop);
   }, 1000 / game.fps);
 };
 
-requestAnimationFrame(loop);
 
 window.addEventListener('load', init);
+
+requestAnimationFrame(loop);
