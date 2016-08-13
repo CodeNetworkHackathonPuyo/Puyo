@@ -114,7 +114,7 @@ blob = {
   color: colorArray[Math.floor(Math.random() * colorArray.length)],
 
   init: function() {
-    blob.color = colorArray[Math.floor(Math.random() * colorArray.length)];
+    blob.color = colorArray[Math.floor(Math.random() * (colorArray.length-1)) + 1];
     blob.x = canvas.width / 2;
     blob.y = 0;
   },
