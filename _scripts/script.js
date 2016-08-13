@@ -21,19 +21,25 @@ game = {
     game.score = 0;
     game.fps = 8;
     game.board = new Array(6);
+
     for (var i = 0; i < 6; i++) {
       game.board[i] = new Array(12);
       for (var j = 0; j < 12; j++) {
         game.board[i][j] = 0;
       }
     }
+
+    $(".retry").click(game.start);
+    $(document).keydown(blob.move);
     blob.init();
   },
 
   stop: function() {
     game.over = true;
-    window.removeEventListener('keydown', blob.move);
+    document.removeEventListener('keydown', blob.move);
+
     game.message = 'GAME OVER - PRESS SPACEBAR';
+    document.getElementsByTagName('h1').innerHTML = game.message;
   },
 
   drawBox: function(x, y, size, color) {
@@ -174,15 +180,10 @@ blob = {
   }
 };
 
-
 function init() {
-
-    document.addEventListener('keydown', blob.move);
-
     game.start();
-    blob.draw();
     game.draw();
-
+    blob.draw();
 }
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
