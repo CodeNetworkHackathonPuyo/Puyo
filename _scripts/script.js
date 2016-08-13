@@ -97,7 +97,7 @@ game = {
       	continue;
       }
       if (game.board[row + rowMod][col + colMod] == colour) {
-      	deleteChain(row + rowMod, col + colMod);
+      	game.deleteChain(row + rowMod, col + colMod);
       }
     }
   },
