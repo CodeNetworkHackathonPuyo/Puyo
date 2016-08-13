@@ -23,7 +23,7 @@ game = {
     for (var i = 0; i < 6; i++) {
       game.board[i] = new Array(12);
       for (var j = 0; j < 12; j++) {
-        game.board[j][i] = 0;
+        game.board[i][j] = 0;
       }
     }
     blob.init();
@@ -44,8 +44,8 @@ game = {
   },
 
   draw: function() {
-    for (var row = 0; col < 6; row++) {
-      for (var col = 0; row < 12; col++) {
+    for (var col = 0; col < 6; col++) {
+      for (var row = 0; row < 12; row++) {
         if (game.board[col][row] != 0) {
           game.drawBox(col * canvas.width/6, row * canvas.height/12, blob.size,
             colorArray[game.board[col][row]]);
@@ -158,6 +158,7 @@ function loop() {
       blob.y += blob.size/50;
     } else {
       // Add the location to the board
+      console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
       game.board[col][row] = colorArray.indexOf(blob.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
