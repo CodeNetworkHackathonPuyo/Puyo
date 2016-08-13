@@ -78,7 +78,7 @@ game = {
       if (row + rowMod > 11 || row + rowMod < 0 || column + colMod > 5 || column + colMod < 0) {
       	continue;
       }
-      if (game.board[row + rowMod][column + colMod] == colour && 
+      if (game.board[row + rowMod][column + colMod] == colour &&
         seen.filter(function(e) {return e.row == row + rowMod && e.col == column + colMod;}).length == 0) {
         sum += game.checkConnect(row + rowMod, column + colMod, seen);
       }
@@ -105,16 +105,18 @@ game = {
 };
 
 var ColorsEnum = Object.freeze({"empty": 0, "blue": 1, "red": 2, "green": 3, "yellow": 4, "purple": 5});
+var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
 blob = {
 
   size: canvas.width / 6,
   x: null,
   y: null,
-  color: '#0F0',
+  color: colorArray[Math.floor(Math.random() * colorArray.length)],
   colorEnum: ColorsEnum.green,
 
   init: function() {
+    blob.color = colorArray[Math.floor(Math.random() * colorArray.length)];
     blob.x = canvas.width / 2 + blob.size / 2;
     blob.y = blob.size / 2;
   },
@@ -155,8 +157,8 @@ function loop() {
     game.resetCanvas();
     var row = Math.floor(blob.y/(canvas.height/12) - 0.5);
     var col = Math.floor(blob.x/(canvas.width/6));
-    if ((row == 11 || 
-      game.board[row + 1][col] == 0) && 
+    if ((row == 11 ||
+      game.board[row + 1][col] == 0) &&
       blob.y < canvas.height - blob.size/2) {
       // There is nothing below the blob
       blob.y += blob.size/50;
