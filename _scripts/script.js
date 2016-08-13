@@ -123,8 +123,10 @@ blob = {
     key = e.keyCode;
     console.log(key);
 
-    if (key == leftKey && blob.x > blob.size) blob.x -= blob.size;
-    else if (key == rightKey && blob.x < canvas.width - blob.size) blob.x += blob.size;
+    var row = blob.y/(canvas.height/12);
+    var col = blob.x/(canvas.width/6);
+    if (key == leftKey && blob.x > blob.size && game.board[row][col - 1] == 0) blob.x -= blob.size;
+    else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[row][col + 1] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size/2) blob.y += blob.size/10;
   },
 
