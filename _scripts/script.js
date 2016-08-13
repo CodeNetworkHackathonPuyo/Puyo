@@ -6,6 +6,8 @@ var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
+var blob;
+var blob2;
 
 game = {
 
@@ -124,7 +126,7 @@ game = {
 
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
-blob = {
+var Blob = {
 
   size: canvas.width / 6,
   x: null,
@@ -178,7 +180,8 @@ blob = {
 function init() {
 
     document.addEventListener('keydown', blob.move);
-
+    blob = Object.create(Blob);
+    blob2 = Object.create(Blob);
     game.start();
     blob.draw();
     game.draw();
