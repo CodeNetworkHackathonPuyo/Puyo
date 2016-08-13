@@ -96,6 +96,28 @@ game = {
     }
   },
 
+  fall: function() {
+  	for (var x = 0; x < 6; x++) {
+  		var found = false;
+  		var y = 0;
+  		while (y < 12) {
+  			if (board[x][y] != 0) {
+  				found = true;
+  			} else if (found) {
+  				var start = y;
+  				while (board[x][y] == 0 && y < 12) {
+  					y++;
+  				}
+  				board[x].splice(start, y - start);
+  				for (var i = 0; i < y - start; i++) {
+  					board[x].unshift(0);
+  				}
+  			}
+  			y++;
+  		}
+  	}
+  }
+
 };
 
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
@@ -166,6 +188,7 @@ function loop() {
       if (game.checkConnect(row, col) >= 4) {
       	// Chain is complete
       	game.deleteChain(row, col);
+      	game.fall();
       }
       // drop a new block
       console.log("Resetting");
