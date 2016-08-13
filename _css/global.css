@@ -1,0 +1,40 @@
+/* bg color: #45afd6 */
+* {
+    box-sizing: border-box;
+}
+
+h1{
+    font-family: 'century gothic';
+    text-align: left;
+    margin: 0px;
+}
+
+
+button{
+    border-radius: 1em;
+    background: #45afd6;
+    border: 1px solid darkblue;
+}
+
+.br{
+    clear: both;
+}
+
+body{
+    background: #45afd6;
+    margin: 0;
+}
+
+.content{
+    background: #fff;
+    width: 1000px;
+    margin: 5px auto;
+    border-radius: 1em;
+    min-height: 80vh;
+    padding: 5px 20px;
+}
+
+canvas{
+    border: 2px solid black;
+    margin: 0 calc(50% - 150px);
+}
