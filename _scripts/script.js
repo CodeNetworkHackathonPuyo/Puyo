@@ -47,7 +47,7 @@ game = {
     for (var col = 0; col < 6; col++) {
       for (var row = 0; row < 12; row++) {
         if (game.board[col][row] != 0) {
-          game.drawBox(col * canvas.width/6, row * canvas.height/12, blob.size,
+          game.drawBox(col * blob.size, row * blob.size, blob.size,
             colorArray[game.board[col][row]]);
         }
       }
@@ -116,12 +116,14 @@ blob = {
   move: function(e) {
     key = e.keyCode;
     console.log(key);
-    var row = Math.floor(blob.y/(canvas.height/12));
-    var col = Math.floor(blob.x/(canvas.width/6));
+
+    var row = Math.floor(blob.y/blob.size);
+    var col = Math.floor(blob.x/blob.size);
+
     console.log(row + " " + col);
-    if (key == leftKey && blob.x > blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
+    if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
-    else if (key == downKey && blob.y < canvas.height - blob.size/2) blob.y += blob.size/10;
+    else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
   },
 
   draw: function() {
@@ -149,8 +151,8 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-    var row = Math.floor(blob.y/(canvas.height/12));
-    var col = Math.floor(blob.x/(canvas.width/6));
+    var row = Math.floor(blob.y/blob.size);
+    var col = Math.floor(blob.x/blob.size);
     if ((row == 11 ||
       game.board[col][row + 1] == 0) &&
       blob.y < canvas.height - blob.size) {
