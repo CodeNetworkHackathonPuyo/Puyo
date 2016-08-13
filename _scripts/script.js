@@ -35,7 +35,6 @@ game = {
   },
 
   drawBox: function(x, y, size, color) {
-    console.log(x + " " + y + " " + color);
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(x - (size / 2), y - (size / 2));
@@ -65,7 +64,7 @@ game = {
   * to the initial argument to this function. Seen represents already checked cells,
   * to prevent loops */
   checkConnect: function(row, column, seen=[]) {
-    colour = board[row][column];
+    colour = game.board[row][column];
     if (colour == 0) {
       return 0;
     }
@@ -76,9 +75,12 @@ game = {
     for (var i = 0; i < 4; i++) {
       var rowMod = i < 2 ? offsets[i] : 0;
       var colMod = i < 2 ? 0 : offsets[i-2];
+      if (row + rowMod > 11 || row + rowMod < 0 || column + colMod > 5 || column + colMod < 0) {
+      	continue;
+      }
       if (game.board[row + rowMod][column + colMod] == colour && 
         !(seen.indexOf((row + rowMod, column + colMod)) > -1)) {
-        sum += checkConnect(row + rowMod, column + colMod, seen);
+        sum += game.checkConnect(row + rowMod, column + colMod, seen);
       }
     }
     return sum;
@@ -91,8 +93,10 @@ game = {
     for (var i = 0; i < 4; i++) {
       var rowMod = i < 2 ? offsets[i] : 0;
       var colMod = i < 2 ? 0 : offsets[i-2];
-      if (game.board[row + rowMod][col + colMod] == colour && 
-        !(seen.indexOf((row + rowMod, col + colMod)) > -1)) {
+      if (row + rowMod > 11 || row + rowMod < 0 || col + colMod > 5 || col + colMod < 0) {
+      	continue;
+      }
+      if (game.board[row + rowMod][col + colMod] == colour) {
       	deleteChain(row + rowMod, col + colMod);
       }
     }
