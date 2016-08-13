@@ -117,7 +117,7 @@ blob = {
     key = e.keyCode;
     console.log(key);
 
-    var row = Math.floor(blob.y/blob.size);
+    var row = Math.ceil(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
 
     console.log(row + " " + col);
