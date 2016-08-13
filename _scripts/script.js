@@ -36,13 +36,7 @@ game = {
 
   drawBox: function(x, y, size, color) {
     ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + size, y);
-    ctx.lineTo(x + size, y + size);
-    ctx.lineTo(x, y + size);
-    ctx.closePath();
-    ctx.fill();
+    ctx.fillRect(x,y, size, size);
   },
 
   resetCanvas: function() {
