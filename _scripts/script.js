@@ -37,10 +37,10 @@ game = {
   drawBox: function(x, y, size, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.moveTo(x - (size / 2), y - (size / 2));
-    ctx.lineTo(x + (size / 2), y - (size / 2));
-    ctx.lineTo(x + (size / 2), y + (size / 2));
-    ctx.lineTo(x - (size / 2), y + (size / 2));
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + size, y);
+    ctx.lineTo(x + size, y + size));
+    ctx.lineTo(x, y + size);
     ctx.closePath();
     ctx.fill();
   },
@@ -53,7 +53,7 @@ game = {
     for (var row = 0; row < 12; row++) {
       for (var col = 0; col < 6; col++) {
         if (game.board[row][col] != 0) {
-          game.drawBox((col + 0.5) * canvas.width/6, (row + 0.5) * canvas.height/12, canvas.width/6,
+          game.drawBox(col * canvas.width/6, row * canvas.height/12, canvas.width/6,
             colorArray[game.board[row][col]]);
         }
       }
@@ -115,8 +115,8 @@ blob = {
 
   init: function() {
     blob.color = colorArray[Math.floor(Math.random() * colorArray.length)];
-    blob.x = canvas.width / 2 + blob.size / 2;
-    blob.y = blob.size / 2;
+    blob.x = canvas.width / 2;
+    blob.y = 0;
   },
 
   move: function(e) {
