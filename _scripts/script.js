@@ -116,8 +116,10 @@ blob = {
   move: function(e) {
     key = e.keyCode;
     console.log(key);
+
     var row = Math.floor(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
+
     console.log(row + " " + col);
     if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
