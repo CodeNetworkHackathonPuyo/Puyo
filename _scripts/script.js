@@ -8,6 +8,7 @@ var rightKey = 39;
 var spacebar = 32;
 var blob;
 var blob2;
+var dev = 1;
 
 game = {
 
@@ -74,10 +75,19 @@ game = {
       return 0;
     }
     seen.push({"row": row, "col": column});
+<<<<<<< HEAD
     console.log("checking " + row + " " + column);
     for (var i = 0; i < seen.length; i++) {
     	console.log(seen[i]);
     }
+=======
+    if (dev) {
+	    console.log("checking " + row + " " + column);
+	    for (var i = 0; i < seen.length; i++) {
+	    	console.log(seen[i]);
+	    }
+	}
+>>>>>>> 79fe0704df4e0e65d8a1375abde2d0f556af42a6
     sum = 1;
     var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
