@@ -59,7 +59,30 @@ game = {
         }
       }
     }
-  }
+  },
+
+  /* This returns an int, based on how many cells of the same colour are adjacent
+  * to the initial argument to this function. Seen represents already checked cells,
+  * to prevent loops */
+  checkConnect: function(row, column, seen=[]) {
+    colour = board[row][column];
+    if (colour == 0) {
+      return 0;
+    }
+    seen.push((row, column));
+    console.log(seen);
+    sum = 1;
+    var offsets = [-1, 1];
+    for (var i = 0; i < 4; i++) {
+      var rowMod = i < 2 ? offsets[i] : 0;
+      var colMod = i < 2 ? 0 : offsets[i-2];
+      if (board[row + rowMod][column + colMod] == colour && 
+        !(seen.indexOf((row + rowMod, column + colMod)) > -1)) {
+        sum += checkConnect(row + rowMod, column + colMod, seen);
+      }
+    }
+    return sum;
+  },
 
 };
 
