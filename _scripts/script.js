@@ -16,6 +16,7 @@ game = {
   board: null,
 
   start: function() {
+    $(document).off('click', game.start);
     game.over = false;
     game.message = null;
     game.score = 0;
@@ -36,10 +37,10 @@ game = {
 
   stop: function() {
     game.over = true;
-    document.removeEventListener('keydown', blob.move);
+    $(document).off('keydown', blob.move);
 
-    game.message = 'GAME OVER - PRESS SPACEBAR';
-    document.getElementsByTagName('h1').innerHTML = game.message;
+    game.message = 'GAME OVER - PRESS RETRY';
+    $('h1').html(game.message);
   },
 
   drawBox: function(x, y, size, color) {
