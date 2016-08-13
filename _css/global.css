@@ -28,6 +28,7 @@ body{
 .content{
     background: #fff;
     width: 1000px;
+    max-width: 95vw;
     margin: 5px auto;
     border-radius: 1em;
     min-height: 80vh;
