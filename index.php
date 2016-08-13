@@ -9,7 +9,7 @@
     <div class="content">
         <h1>Puyo Puyo</h1>
         <section class=''>
-        <button class='retry'>Retry</button>
+        <button class='retry' ><a href="">Retry</button>
 
         <canvas id="canvas" width="300" height="600"></canvas>
 

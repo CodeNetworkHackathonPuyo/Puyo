@@ -1,6 +1,8 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+var dev = 0;
+
 var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
@@ -8,7 +10,6 @@ var rightKey = 39;
 var spacebar = 32;
 var blob;
 var blob2;
-var dev = 1;
 
 game = {
 
@@ -19,7 +20,6 @@ game = {
   board: null,
 
   start: function() {
-    $(".retry").off('click', game.start);
     game.over = false;
     game.message = null;
     game.score = 0;
@@ -33,7 +33,6 @@ game = {
       }
     }
 
-    $(".retry").click(game.start);
     $(document).keydown(blob.move);
     blob.init();
   },
@@ -75,19 +74,12 @@ game = {
       return 0;
     }
     seen.push({"row": row, "col": column});
-<<<<<<< HEAD
-    console.log("checking " + row + " " + column);
-    for (var i = 0; i < seen.length; i++) {
-    	console.log(seen[i]);
-    }
-=======
     if (dev) {
-	    console.log("checking " + row + " " + column);
-	    for (var i = 0; i < seen.length; i++) {
-	    	console.log(seen[i]);
-	    }
-	}
->>>>>>> 79fe0704df4e0e65d8a1375abde2d0f556af42a6
+        console.log("checking " + row + " " + column);
+        for (var i = 0; i < seen.length; i++) {
+        	console.log(seen[i]);
+        }
+    }
     sum = 1;
     var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
@@ -179,7 +171,7 @@ var blob = {
     var row = Math.ceil(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
 
-    console.log(row + " " + col);
+    if (dev) console.log(row + " " + col);
     if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
@@ -212,6 +204,7 @@ var blob = {
 function init() {
     //blob = Object.create(Blob);
     //blob2 = Object.create(Blob);
+    // $(".retry").click(game.start);
     game.start();
     game.draw();
     blob.draw();
@@ -235,7 +228,7 @@ function loop() {
       blob.y += blob.size/10;
     } else {
       // Add the location to the board
-      console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
+      if (dev) console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
       game.board[col][row] = colorArray.indexOf(blob.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
@@ -262,6 +255,6 @@ function loop() {
 };
 
 
-window.addEventListener('load', init);
+init();
 
 requestAnimationFrame(loop);

@@ -16,6 +16,11 @@ button{
     border: 1px solid darkblue;
 }
 
+button a{
+    text-decoration: none;
+    color: #000;
+}
+
 .br{
     clear: both;
 }
