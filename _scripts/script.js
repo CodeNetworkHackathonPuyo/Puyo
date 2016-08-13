@@ -5,6 +5,7 @@ var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
+var spacebar = 32;
 
 game = {
 
@@ -147,10 +148,29 @@ blob = {
     if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
+    else if (key == spacebar) blob.drop();
   },
 
   draw: function() {
     game.drawBox(parseInt(blob.x), parseInt(blob.y), blob.size, blob.color);
+  },
+
+  drop: function() {
+  	var col = Math.floor(blob.x/blob.size);
+  	for (var i = 0; i < 13; i++) {
+  		if (i == 12 || game.board[col][i] != 0) {
+  			game.board[col][i-1] = colorArray.indexOf(blob.color);
+			// Check whether a chain is complete
+			if (game.checkConnect(i-1, col) >= 4) {
+				// Chain is complete
+				game.deleteChain(i-1, col);
+				game.fall();
+			}
+			// drop a new block
+			blob.init();
+			return;
+  		}
+  	}
   }
 };
 
@@ -198,7 +218,6 @@ function loop() {
           return;
       }
       // drop a new block
-      console.log("Resetting");
       blob.init();
     }
 
