@@ -116,7 +116,6 @@ blob = {
   move: function(e) {
     key = e.keyCode;
     console.log(key);
-
     var row = Math.floor(blob.y/(canvas.height/12));
     var col = Math.floor(blob.x/(canvas.width/6));
     console.log(row + " " + col);
