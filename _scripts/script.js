@@ -31,6 +31,7 @@ game = {
 
   stop: function() {
     game.over = true;
+    window.removeEventListener('keydown', blob.move);
     game.message = 'GAME OVER - PRESS SPACEBAR';
   },
 
@@ -101,33 +102,20 @@ game = {
   		var found = false;
   		var y = 0;
   		while (y < 12) {
-  			if (game.board[x][y] != 0) {
+  			if (board[x][y] != 0) {
   				found = true;
   			} else if (found) {
   				var start = y;
-  				while (game.board[x][y] == 0 && y < 12) {
+  				while (board[x][y] == 0 && y < 12) {
   					y++;
   				}
-  				game.board[x].splice(start, y - start);
+  				board[x].splice(start, y - start);
   				for (var i = 0; i < y - start; i++) {
-  					game.board[x].unshift(0);
+  					board[x].unshift(0);
   				}
   			}
   			y++;
   		}
-  	}
-  	// Trigger a new deletion
-  	var triggered = false;
-  	for (var x = 0; x < 6; x++) {
-  		for (var y = 0; y < 12; y++) {
-  			if (game.checkConnect(y, x) >= 4) {
-  				game.deleteChain(y, x);
-  				triggered = true;
-  			}
-  		}
-  	}
-  	if (triggered) {
-  		game.fall();
   	}
   }
 
@@ -202,6 +190,12 @@ function loop() {
       	// Chain is complete
       	game.deleteChain(row, col);
       	game.fall();
+      }
+
+      if (row == 0) {
+          game.stop();
+          console.log(game.over);
+          return;
       }
       // drop a new block
       console.log("Resetting");
