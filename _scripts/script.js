@@ -132,7 +132,7 @@ game = {
 
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
-var Blob = {
+var blob = {
 
   size: canvas.width / 6,
   x: null,
@@ -183,8 +183,8 @@ var Blob = {
 };
 
 function init() {
-    blob = Object.create(Blob);
-    blob2 = Object.create(Blob);
+    //blob = Object.create(Blob);
+    //blob2 = Object.create(Blob);
     game.start();
     game.draw();
     blob.draw();
