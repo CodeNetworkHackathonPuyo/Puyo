@@ -68,7 +68,7 @@ game = {
     if (colour == 0) {
       return 0;
     }
-    seen.push((row, column));
+    seen.push({"row": row, "col": column});
     console.log(seen);
     sum = 1;
     var offsets = [-1, 1];
@@ -79,7 +79,7 @@ game = {
       	continue;
       }
       if (game.board[row + rowMod][column + colMod] == colour && 
-        !(seen.indexOf((row + rowMod, column + colMod)) > -1)) {
+        seen.filter(function(e) {return e.row == row + rowMod && e.col == column + colMod;}).length == 0) {
         sum += game.checkConnect(row + rowMod, column + colMod, seen);
       }
     }
