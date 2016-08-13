@@ -47,7 +47,7 @@ game = {
     for (var row = 0; col < 6; row++) {
       for (var col = 0; row < 12; col++) {
         if (game.board[col][row] != 0) {
-          game.drawBox(col * canvas.width/6, row * canvas.height/12, blob.size,
+          game.drawBox(col * blob.size, row * blob.size, blob.size,
             colorArray[game.board[col][row]]);
         }
       }
