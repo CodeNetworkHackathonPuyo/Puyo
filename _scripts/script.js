@@ -84,6 +84,20 @@ game = {
     return sum;
   },
 
+  deleteChain: function(row, col) {
+    colour = board[row][col];
+    board[row][col] = 0;
+  	var offsets = [-1, 1];
+    for (var i = 0; i < 4; i++) {
+      var rowMod = i < 2 ? offsets[i] : 0;
+      var colMod = i < 2 ? 0 : offsets[i-2];
+      if (board[row + rowMod][col + colMod] == colour && 
+        !(seen.indexOf((row + rowMod, col + colMod)) > -1)) {
+      	deleteChain(row + rowMod, col + colMod);
+      }
+    }
+  },
+
 };
 
 var ColorsEnum = Object.freeze({"empty": 0, "blue": 1, "red": 2, "green": 3, "yellow": 4, "purple": 5});
@@ -135,14 +149,21 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-    if ((Math.floor(blob.y/(canvas.height/12) - 0.5) == 11 || 
-      game.board[Math.floor(blob.y/(canvas.height/12) - 0.5) + 1][Math.floor(blob.x/(canvas.width/6))] == 0) && 
+    var row = Math.floor(blob.y/(canvas.height/12) - 0.5);
+    var col = Math.floor(blob.x/(canvas.width/6));
+    if ((row == 11 || 
+      game.board[row + 1][col] == 0) && 
       blob.y < canvas.height - blob.size/2) {
       // There is nothing below the blob
       blob.y += blob.size/50;
     } else {
       // Add the location to the board
-      game.board[Math.floor(blob.y/(canvas.height/12))][Math.floor(blob.x/(canvas.width/6))] = blob.colorEnum;
+      game.board[row][col] = blob.colorEnum;
+      // Check whether a chain is complete
+      if (game.checkConnect(row, col) >= 4) {
+      	// Chain is complete
+      	game.deleteChain(row, col);
+      }
       // drop a new block
       console.log("Resetting");
       blob.init();
