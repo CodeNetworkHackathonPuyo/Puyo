@@ -44,8 +44,8 @@ game = {
   },
 
   draw: function() {
-    for (var row = 0; col < 6; row++) {
-      for (var col = 0; row < 12; col++) {
+    for (var col = 0; col < 6; col++) {
+      for (var row = 0; row < 12; row++) {
         if (game.board[col][row] != 0) {
           game.drawBox(col * blob.size, row * blob.size, blob.size,
             colorArray[game.board[col][row]]);
@@ -117,7 +117,7 @@ blob = {
     key = e.keyCode;
     console.log(key);
 
-    var row = Math.floor(blob.y/blob.size);
+    var row = Math.ceil(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
 
     console.log(row + " " + col);
