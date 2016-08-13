@@ -169,13 +169,13 @@ blob = {
 
   drop: function() {
   	var col = Math.floor(blob.x/blob.size);
-  	for (var i = 0; i < 12; i++) {
-  		if (game.board[col][i] != 0) {
-  			board[col][i-1] = blob.color;
+  	for (var i = 0; i < 13; i++) {
+  		if (i == 12 || game.board[col][i] != 0) {
+  			game.board[col][i-1] = colorArray.indexOf(blob.color);
 			// Check whether a chain is complete
-			if (game.checkConnect(row, col) >= 4) {
+			if (game.checkConnect(i-1, col) >= 4) {
 				// Chain is complete
-				game.deleteChain(row, col);
+				game.deleteChain(i-1, col);
 				game.fall();
 			}
 			// drop a new block
