@@ -127,6 +127,19 @@ game = {
   			y++;
   		}
   	}
+  	// Trigger a new deletion
+  	var triggered = false;
+  	for (var x = 0; x < 6; x++) {
+  		for (var y = 0; y < 12; y++) {
+  			if (game.checkConnect(y, x) >= 4) {
+  				game.deleteChain(y, x);
+  				triggered = true;
+  			}
+  		}
+  	}
+  	if (triggered) {
+  		game.fall();
+  	}
   }
 
 };
