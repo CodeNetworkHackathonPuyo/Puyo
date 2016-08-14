@@ -1,4 +1,4 @@
-<?php	$site = 'http://smallprojects.info/puyo2'	?>
+<?php	$site = 'http://smallprojects.info/puyo'	?>
 <!-- <?=$site?> -->
 
 <meta charset="utf-8">
