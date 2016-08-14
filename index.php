@@ -1,5 +1,5 @@
 <html>
-<title>Title</title>
+<title>Puyo Puyo</title>
 <?php include "_includes/head.php"; ?>
 <?php include "_includes/header.php"; ?>
 
