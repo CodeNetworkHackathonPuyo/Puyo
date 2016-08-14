@@ -41,8 +41,8 @@ game = {
     }
 
 
-    $(document).keydown(square1.move);
-    square1.init();
+    $(document).keydown(move);
+    square1.init(1);
   },
 
   stop: function() {
@@ -171,24 +171,15 @@ var Blob = function blob() {
   this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
   var self = this;
 
-  this.init = function() {
+  this.init = function(type) {
     self.color = colorArray[Math.floor(Math.random() * (colorArray.length-1)) + 1];
-    self.x = canvas.width / 2;
+    if (type == 1) {
+    	self.x = canvas.width / 2;
+    } else if (type == 2) {
+    	self.x = canvas.width / 2 - self.size;
+    }
+    self.type = type;
     self.y = 0;
-  };
-
-  this.move = function(e) {
-    key = e.keyCode;
-    console.log(key);
-
-    var row = Math.ceil(self.y/self.size);
-    var col = Math.floor(self.x/self.size);
-
-    if (dev) console.log(row + " " + col);
-    if (key == leftKey && self.x >= self.size && game.board[col - 1][row] == 0) self.x -= self.size;
-    else if (key == rightKey && self.x < canvas.width - self.size && game.board[col + 1][row] == 0) self.x += self.size;
-    else if (key == downKey && self.y < canvas.height - self.size) self.y += self.size/10;
-    else if (key == spacebar) self.drop();
   };
 
   this.draw = function() {
@@ -217,9 +208,8 @@ var Blob = function blob() {
 function init() {
     square1 = new Blob();
     square2 = new Blob();
-    square1.init()
-    square2.init();
-    square2.x = canvas.width/2 - square2.size;
+    square1.init(1)
+    square2.init(2);
     // $(".retry").click(game.start);
     game.start();
     requestAnimationFrame(loop);
@@ -228,6 +218,52 @@ function init() {
     square1.draw();
     square2.draw();
 
+}
+
+function move(e) {
+	key = e.keyCode;
+	console.log(key);
+
+	var row = Math.ceil(self.y/self.size);
+	var col = Math.floor(self.x/self.size);
+
+	if (dev) console.log(row + " " + col);
+	if (canMove("left", key)) {
+        square1.x -= square1.size;
+        square2.x -= square1.size;
+    } else if (canMove("right", key)) {
+        square1.x += square1.size;
+        square2.x += square2.size;
+    } else if (canMove("down", key)) {
+        square1.y += square1.size/10;
+        square2.y += square2.size/10;
+    } else if (key == spacebar) {
+        square1.drop();
+        square2.drop();
+    }
+};
+
+function canMove(direction, key) {
+	var row = Math.ceil(square1.y/square1.size);
+	var row2 = Math.ceil(square2.y/square2.size);
+    var col = Math.floor(square1.x/square1.size);
+    var col2 = Math.floor(square2.x/square2.size);
+    if (direction == "left" && key == leftKey) {
+    	if (row == row2) {
+    		return Math.min(col, col2) > 0 && game.board[Math.min(col, col2) - 1][row] == 0;
+    	} else {
+    		return col > 0 && game.board[col - 1][row] == 0 && game.board[col - 1][row2] == 0;
+    	}
+    } else if (direction == "right" && key == rightKey) {
+    	if (row == row2) {
+    		return Math.max(col, col2) < 5 && game.board[Math.max(col, col2) + 1][row] == 0;
+    	} else {
+    		return col < 5 && game.board[col + 1][row] == 0 && game.board[col + 1][row2] == 0;
+    	}
+    } else if (direction == "down" && key == downKey) {
+    	return Math.max(row, row2) < 11;
+    }
+    return false;
 }
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
@@ -268,7 +304,7 @@ function loop() {
           return;
       }
       // drop a new block
-      square1.init();
+      square1.init(1);
     }
 
     square1.draw();
