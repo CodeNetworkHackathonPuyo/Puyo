@@ -35,6 +35,7 @@ game = {
     game.paused = false;
     game.message = null;
     game.score = 0;
+    game.chains = 0;
     game.fps = 8;
     game.board = new Array(6);
     game.startTime = new Date().getTime();
@@ -86,7 +87,7 @@ game = {
 
   updateTimer: function() {
       game.time = parseInt((new Date().getTime()-game.startTime)/1000, 10);
-      $('h1').html(game.time + 's | ' + game.score + ' points');
+      $('h1').html(game.time + 's | ' + game.score + ' points | ' + game.chains + ' current combo');
   },
 
   /* This returns an int, based on how many cells of the same colour are adjacent
@@ -132,6 +133,7 @@ game = {
       }
       if (game.board[col + colMod][row + rowMod] == colour) {
       	game.deleteChain(row + rowMod, col + colMod);
+        game.chains += 1;
       }
     }
   },
@@ -274,6 +276,7 @@ function loop() {
 
     blob.draw();
     game.draw();
+    game.chains = 0;
   }
   setTimeout(function() {
     requestAnimationFrame(loop);
