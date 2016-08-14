@@ -325,8 +325,6 @@ function move(e) {
             square1.init(square1.type);
             square2.init(square2.type);
             game.resetCanvas();
-            square1.draw();
-            square2.draw();
             game.draw();
             game.pause();
             setTimeout(function() {
@@ -457,9 +455,18 @@ function loop() {
             game.board[col2][row2] = colorArray.indexOf(square2.color);
             square1.drop();
         }
-        game.checkDelete(row, col);
-        game.checkDelete(row2, col2);
-        game.fall();
+        var wasDeleted = game.checkDelete(row, col);
+        wasDeleted |= game.checkDelete(row2, col2);
+        // Wrap the following lines in a setTimeout()
+        var time = wasDeleted ? 500 : 0;
+        // drop a new block
+        game.resetCanvas();
+        game.draw();
+        game.pause();
+        setTimeout(function() {
+            game.fall();
+            game.pause();
+        }, time);
 
         if (row == 0) {
             game.stop();
