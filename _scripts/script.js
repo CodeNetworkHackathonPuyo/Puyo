@@ -132,13 +132,17 @@ game = {
       $('h1').html(game.time + 's | ' + game.score + ' points | ' + game.chains + ' current combo');
   },
 
-  /* Check for connections, and delete if greater than 4 */
+  /* Check for connections, and delete if greater than 4. 
+   * Returns true is items were deleted */
   checkDelete: function(row, col) {
     var blobsConnected = game.checkConnect(row, col);
     if (blobsConnected >= 4) {
         game.score += (blobsConnected - 3);
         // Chain is complete
         game.deleteChain(row, col);
+        return true;
+    } else {
+        return false;
     }
   },
 
@@ -244,7 +248,7 @@ var Blob = function blob() {
     	self.x = canvas.width / 2 - self.size;
     }
     self.type = type;
-    self.y = 0;
+    self.y = -self.size;
   };
 
   this.draw = function() {
@@ -295,23 +299,40 @@ function move(e) {
             var col = square1.x/square1.size;
             var loc2 = square2.drop();
             var col2 = square2.x/square2.size;
-            game.checkDelete(loc1, col);
-            game.checkDelete(loc2, col2);
-            game.fall();
+            var wasDeleted = game.checkDelete(loc1, col);
+            wasDeleted |= game.checkDelete(loc2, col2);
+            // Wrap the following lines in a setTimeout()
+            var time = wasDeleted ? 500 : 0;
             // drop a new block
             square1.init(square1.type);
             square2.init(square2.type);
+            game.resetCanvas();
+            game.draw();
+            game.pause();
+            setTimeout(function() {
+                game.fall();
+                game.pause();
+            }, time);
         } else {
             var loc1 = square2.drop();
             var col = square2.x/square2.size;
             var loc2 = square1.drop();
             var col2 = square1.x/square1.size;
-            game.checkDelete(loc1, col);
-            game.checkDelete(loc2, col2);
-            game.fall();
+            var wasDeleted = game.checkDelete(loc1, col);
+            wasDeleted |= game.checkDelete(loc2, col2);
+            var time = wasDeleted ? 500 : 0;
             // drop a new block
             square1.init(square1.type);
             square2.init(square2.type);
+            game.resetCanvas();
+            square1.draw();
+            square2.draw();
+            game.draw();
+            game.pause();
+            setTimeout(function() {
+                game.fall();
+                game.pause();
+            }, time);
         }
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
