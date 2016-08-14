@@ -11,6 +11,7 @@ var spacebar = 32;
 var pauseKeys = [27, 80];
 var rotateCw = 68;
 var rotateCcw = 83;
+var spriteSwitch = 79;
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -18,6 +19,7 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 
 var square1;
 var square2;
+var sprite = false;
 
 var dev = 0;
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
@@ -70,6 +72,11 @@ game = {
   },
 
   drawSprite: function(x, y, size, color) {
+    if (!sprite) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, size, size);
+        return;
+    }
     var mainImg = $('#sonic')[0];
     var sx = 60;
     var sy = 223;
@@ -312,6 +319,8 @@ function move(e) {
         rotate("cw");
     } else if (key == rotateCcw) {
         rotate("ccw");
+    } else if (key == spriteSwitch) {
+        sprite = !sprite;
     }
 };
 
