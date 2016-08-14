@@ -241,10 +241,6 @@ function move(e) {
 	key = e.keyCode;
 	console.log(key);
 
-	var row = Math.ceil(self.y/self.size);
-	var col = Math.floor(self.x/self.size);
-
-	console.log(row + " " + col);
 	if (canMove("left", key)) {
         square1.x -= square1.size;
         square2.x -= square1.size;
@@ -255,8 +251,13 @@ function move(e) {
         square1.y += square1.size/10;
         square2.y += square2.size/10;
     } else if (key == spacebar) {
-        square1.drop();
-        square2.drop();
+        if (square1.y > square2.y) {
+            square1.drop();
+            square2.drop();
+        } else {
+            square2.drop();
+            square1.drop();
+        }
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
     } else if (key == rotateCw) {
