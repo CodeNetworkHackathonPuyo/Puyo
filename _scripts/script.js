@@ -233,8 +233,7 @@ function init() {
     game.draw();
     square1.draw();
     square2.draw();
-
-}
+};
 
 function move(e) {
 	key = e.keyCode;
@@ -258,6 +257,26 @@ function move(e) {
         square2.drop();
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
+    }
+};
+
+function rotate() {
+    var row = Math.ceil(square1.y/square1.size);
+    var row2 = Math.ceil(square2.y/square2.size);
+    var col = Math.floor(square1.x/square1.size);
+    var col2 = Math.floor(square2.x/square2.size);
+    // Determine orientation
+    if (row == row2 && col2 > col) {
+        // sq1 sq2
+        
+    } else if (row == row2 && col2 < col) {
+        // sq2 sq1
+    } else if (col == col2 && row2 > row) {
+        // sq1
+        // sq2
+    } else if (col == col2 && row2 < row) {
+        // sq2
+        // sq1
     }
 };
 
