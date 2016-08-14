@@ -256,6 +256,8 @@ function move(e) {
     } else if (key == spacebar) {
         square1.drop();
         square2.drop();
+    } else if (pauseKeys.indexOf(key) > -1) {
+        game.pause();
     }
 };
 
