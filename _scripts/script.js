@@ -279,25 +279,41 @@ function rotate(direction) {
         if (direction == "cw") {
             square2.x -= square2.size;
             square2.y += square2.size;
+        } else if (direction == "ccw") {
+            square2.x -= square2.size;
+            square2.y -= square2.size;
         }
     } else if (row == row2 && col2 < col) {
         // sq2 sq1
         if (direction == "cw") {
             square2.x += square2.size;
             square2.y -= square2.size;
+        } else if (direction == "ccw") {
+            square2.x += square2.size;
+            square2.y += square2.size;
         }
     } else if (col == col2 && row2 > row) {
         // sq1
         // sq2
-        if (direction == "cw") {
+        if (direction == "cw" &&
+            col != 0) {
             square2.x -= square2.size;
+            square2.y -= square2.size;
+        } else if (direction == "ccw" &&
+            col != 5) {
+            square2.x += square2.size;
             square2.y -= square2.size;
         }
     } else if (col == col2 && row2 < row) {
         // sq2
         // sq1
-        if (direction == "cw") {
+        if (direction == "cw" && 
+            col != 5) {
             square2.x += square2.size;
+            square2.y += square2.size;
+        } else if (direction == "ccw" && 
+            col != 0) {
+            square2.x -= square2.size;
             square2.y += square2.size;
         }
     }
