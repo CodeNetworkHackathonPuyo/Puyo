@@ -185,6 +185,7 @@ var Blob = function blob() {
   this.x = null;
   this.y = null;
   this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
+  this.type = null;
   var self = this;
 
   this.init = function(type) {
@@ -216,7 +217,7 @@ var Blob = function blob() {
 				game.fall();
 			}
 			// drop a new block
-			self.init();
+			self.init(self.type);
 			return;
   		}
   	}
