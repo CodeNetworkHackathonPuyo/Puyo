@@ -9,6 +9,7 @@ var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
 var pauseKeys = [27, 80];
+var rotateCw = ;
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -242,7 +243,7 @@ function move(e) {
 	var row = Math.ceil(self.y/self.size);
 	var col = Math.floor(self.x/self.size);
 
-	if (dev) console.log(row + " " + col);
+	console.log(row + " " + col);
 	if (canMove("left", key)) {
         square1.x -= square1.size;
         square2.x -= square1.size;
@@ -257,10 +258,14 @@ function move(e) {
         square2.drop();
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
+    } else if (key == rotateCw) {
+        rotate("cw");
+    } else if (key == rotateCcw) {
+        rotate("ccw");
     }
 };
 
-function rotate() {
+function rotate(direction) {
     var row = Math.ceil(square1.y/square1.size);
     var row2 = Math.ceil(square2.y/square2.size);
     var col = Math.floor(square1.x/square1.size);
@@ -268,15 +273,30 @@ function rotate() {
     // Determine orientation
     if (row == row2 && col2 > col) {
         // sq1 sq2
-        
+        if (direction == "cw") {
+            square2.x -= square2.size;
+            square2.y += square2.size;
+        }
     } else if (row == row2 && col2 < col) {
         // sq2 sq1
+        if (direction == "cw") {
+            square2.x += square2.size;
+            square2.y -= square2.size;
+        }
     } else if (col == col2 && row2 > row) {
         // sq1
         // sq2
+        if (direction == "cw") {
+            square2.x -= square2.size;
+            square2.y -= square2.size;
+        }
     } else if (col == col2 && row2 < row) {
         // sq2
         // sq1
+        if (direction == "cw") {
+            square2.x += square2.size;
+            square2.y += square2.size;
+        }
     }
 };
 
