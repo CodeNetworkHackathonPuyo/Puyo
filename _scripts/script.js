@@ -292,7 +292,9 @@ function rotate(direction) {
     // Determine orientation
     if (row == row2 && col2 > col) {
         // sq1 sq2
-        if (direction == "cw") {
+        if (direction == "cw" &&
+            row < 11 &&
+            game.board[col][row + 1] == 0) {
             square2.x -= square2.size;
             square2.y += square2.size;
         } else if (direction == "ccw") {
@@ -304,7 +306,9 @@ function rotate(direction) {
         if (direction == "cw") {
             square2.x += square2.size;
             square2.y -= square2.size;
-        } else if (direction == "ccw") {
+        } else if (direction == "ccw" &&
+            row < 11 &&
+            game.board[col][row + 1] == 0) {
             square2.x += square2.size;
             square2.y += square2.size;
         }
@@ -312,11 +316,13 @@ function rotate(direction) {
         // sq1
         // sq2
         if (direction == "cw" &&
-            col != 0) {
+            col != 0 &&
+            game.board[col - 1][row] == 0) {
             square2.x -= square2.size;
             square2.y -= square2.size;
         } else if (direction == "ccw" &&
-            col != 5) {
+            col != 5 &&
+            game.board[col + 1][row] == 0) {
             square2.x += square2.size;
             square2.y -= square2.size;
         }
@@ -324,11 +330,13 @@ function rotate(direction) {
         // sq2
         // sq1
         if (direction == "cw" && 
-            col != 5) {
+            col != 5 &&
+            game.board[col + 1][row] == 0) {
             square2.x += square2.size;
             square2.y += square2.size;
         } else if (direction == "ccw" && 
-            col != 0) {
+            col != 0 &&
+            game.board[col - 1][row] == 0) {
             square2.x -= square2.size;
             square2.y += square2.size;
         }
