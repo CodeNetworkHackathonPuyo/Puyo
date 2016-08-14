@@ -1,30 +1,37 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+canvas.width = 270;
+canvas.height = canvas.width*2;
 
 var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
+
 var square1;
 var square2;
-var dev = 1;
+
+var dev = 0;
+var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
+
 
 game = {
-
   score: 0,
   fps: 8,
   over: false,
   message: null,
   board: null,
+  startTime: null,
+  time: null,
 
   start: function() {
-    $(".retry").off('click', game.start);
     game.over = false;
     game.message = null;
     game.score = 0;
     game.fps = 8;
     game.board = new Array(6);
+    game.startTime = new Date().getTime();
 
     for (var i = 0; i < 6; i++) {
       game.board[i] = new Array(12);
@@ -33,7 +40,7 @@ game = {
       }
     }
 
-    $(".retry").click(game.start);
+
     $(document).keydown(square1.move);
     square1.init();
   },
@@ -42,7 +49,7 @@ game = {
     game.over = true;
     $(document).off('keydown', square1.move);
 
-    game.message = 'GAME OVER - PRESS RETRY';
+    game.message = 'GAME OVER - ' + game.score + ' points';
     $('h1').html(game.message);
   },
 
@@ -66,6 +73,11 @@ game = {
     }
   },
 
+  updateTimer: function() {
+      game.time = parseInt((new Date().getTime()-game.startTime)/1000, 10);
+      $('h1').html(game.time + 's | ' + game.score + ' points');
+  },
+
   /* This returns an int, based on how many cells of the same colour are adjacent
   * to the initial argument to this function. Seen represents already checked cells,
   * to prevent loops */
@@ -76,11 +88,11 @@ game = {
     }
     seen.push({"row": row, "col": column});
     if (dev) {
-	    console.log("checking " + row + " " + column);
-	    for (var i = 0; i < seen.length; i++) {
-	    	console.log(seen[i]);
-	    }
-	}
+        console.log("checking " + row + " " + column);
+        for (var i = 0; i < seen.length; i++) {
+        	console.log(seen[i]);
+        }
+    }
     sum = 1;
     var offsets = [-1, 1];
     for (var i = 0; i < 4; i++) {
@@ -98,6 +110,7 @@ game = {
   },
 
   deleteChain: function(row, col) {
+    game.score+= 1/4;
     colour = game.board[col][row];
     game.board[col][row] = 0;
   	var offsets = [-1, 1];
@@ -150,8 +163,6 @@ game = {
 
 };
 
-var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
-
 var Blob = function blob() {
 
   this.size: canvas.width / 6;
@@ -173,7 +184,7 @@ var Blob = function blob() {
     var row = Math.ceil(self.y/self.size);
     var col = Math.floor(self.x/self.size);
 
-    console.log(row + " " + col);
+    if (dev) console.log(row + " " + col);
     if (key == leftKey && self.x >= self.size && game.board[col - 1][row] == 0) self.x -= self.size;
     else if (key == rightKey && self.x < canvas.width - self.size && game.board[col + 1][row] == 0) self.x += self.size;
     else if (key == downKey && self.y < canvas.height - self.size) self.y += self.size/10;
@@ -206,7 +217,10 @@ var Blob = function blob() {
 function init() {
     var square1 = new Blob();
     var square2 = new Blob();
+    // $(".retry").click(game.start);
     game.start();
+    requestAnimationFrame(loop);
+
     game.draw();
     blob.draw();
 }
@@ -220,6 +234,7 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
+    game.updateTimer();
     var row = Math.floor(square1.y/square1.size);
     var col = Math.floor(square1.x/square1.size);
     if ((row == 11 ||
@@ -229,7 +244,7 @@ function loop() {
       square1.y += square1.size/10;
     } else {
       // Add the location to the board
-      console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
+      if (dev) console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
       game.board[col][row] = colorArray.indexOf(square1.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
@@ -255,7 +270,4 @@ function loop() {
   }, 1000 / game.fps);
 };
 
-
-window.addEventListener('load', init);
-
-requestAnimationFrame(loop);
+$( document ).ready(init);

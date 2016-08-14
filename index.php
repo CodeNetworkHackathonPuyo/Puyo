@@ -1,5 +1,5 @@
 <html>
-<title>Title</title>
+<title>Puyo Puyo</title>
 <?php include "_includes/head.php"; ?>
 <?php include "_includes/header.php"; ?>
 
@@ -9,9 +9,9 @@
     <div class="content">
         <h1>Puyo Puyo</h1>
         <section class=''>
-        <button class='retry'>Retry</button>
+        <button class='retry' ><a href="">Retry</button>
 
-        <canvas id="canvas" width="300" height="600"></canvas>
+        <canvas id="canvas"></canvas>
 
         </section>
     </div>
