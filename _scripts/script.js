@@ -165,19 +165,19 @@ game = {
 
 var Blob = function blob() {
 
-  this.size: canvas.width / 6;
-  this.x: null;
-  this.y: null;
-  this.color: colorArray[Math.floor(Math.random() * colorArray.length)];
+  this.size = canvas.width / 6;
+  this.x = null;
+  this.y = null;
+  this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
   var self = this;
 
-  this.init: function() {
+  this.init = function() {
     self.color = colorArray[Math.floor(Math.random() * (colorArray.length-1)) + 1];
     self.x = canvas.width / 2;
     self.y = 0;
   };
 
-  this.move: function(e) {
+  this.move = function(e) {
     key = e.keyCode;
     console.log(key);
 
@@ -191,11 +191,11 @@ var Blob = function blob() {
     else if (key == spacebar) self.drop();
   };
 
-  this.draw: function() {
+  this.draw = function() {
     game.drawBox(parseInt(self.x), parseInt(self.y), self.size, self.color);
   };
 
-  this.drop: function() {
+  this.drop = function() {
   	var col = Math.floor(self.x/self.size);
   	for (var i = 0; i < 13; i++) {
   		if (i == 12 || game.board[col][i] != 0) {
@@ -215,14 +215,19 @@ var Blob = function blob() {
 };
 
 function init() {
-    var square1 = new Blob();
-    var square2 = new Blob();
+    square1 = new Blob();
+    square2 = new Blob();
+    square1.init()
+    square2.init();
+    square2.x = canvas.width/2 - square2.size;
     // $(".retry").click(game.start);
     game.start();
     requestAnimationFrame(loop);
 
     game.draw();
-    blob.draw();
+    square1.draw();
+    square2.draw();
+
 }
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
@@ -236,12 +241,16 @@ function loop() {
     game.resetCanvas();
     game.updateTimer();
     var row = Math.floor(square1.y/square1.size);
+    var row2 = Math.floor(square2.y/square2.size);
     var col = Math.floor(square1.x/square1.size);
-    if ((row == 11 ||
-      game.board[col][row + 1] == 0) &&
-      square1.y < canvas.height - square1.size) {
+    var col2 = Math.floor(square2.x/square2.size);
+    if ((Math.max(row, row2) == 11 ||
+    	(col == col2 && game.board[col][Math.max(row, row2) + 1] == 0) ||
+    	col != col2 && game.board[col][row + 1] == 0 && game.board[col2][row2 + 1] == 0) &&
+      Math.max(square1.y, square2.y) < canvas.height - square1.size) {
       // There is nothing below the blob
       square1.y += square1.size/10;
+      square2.y += square2.size/10;
     } else {
       // Add the location to the board
       if (dev) console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
@@ -263,6 +272,7 @@ function loop() {
     }
 
     square1.draw();
+    square2.draw();
     game.draw();
   }
   setTimeout(function() {
