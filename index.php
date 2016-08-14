@@ -8,6 +8,7 @@
 
     <div class="content">
         <h1>Puyo Puyo</h1>
+        <div>
         <section class=''>
         <img id='sonic' src='<?=$site?>/_images/sonic.png' />
         <button class='retry' ><a href="">Retry</a></button>
@@ -15,6 +16,13 @@
         <canvas id="canvas"></canvas>
 
         </section>
+        </div>
+        <div id='controls'>
+        Arrow keys - Movement <br>
+        S - Rotate Counter Clockwise <br>
+        D - Rotate Clockwise <br>
+        Space - Drop
+        </div>
     </div>
     <?php include "_includes/footer.php"; ?>
 </body>
