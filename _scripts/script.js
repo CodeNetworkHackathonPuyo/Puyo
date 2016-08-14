@@ -136,7 +136,6 @@ game = {
       }
       if (game.board[col + colMod][row + rowMod] == colour) {
       	game.deleteChain(row + rowMod, col + colMod);
-        game.chains += 1;
       }
     }
   },
@@ -168,6 +167,7 @@ game = {
   			if (game.checkConnect(y, x) >= 4) {
   				game.deleteChain(y, x);
   				triggered = true;
+                game.chains += 1;
   			}
   		}
   	}
