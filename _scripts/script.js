@@ -8,6 +8,11 @@ var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
+var pauseKeys = [27, 80];
+
+var requestAnimationFrame =  window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame;
 
 var dev = 0;
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
@@ -19,6 +24,7 @@ game = {
   score: 0,
   fps: 8,
   over: false,
+  paused: false,
   message: null,
   board: null,
   startTime: null,
@@ -26,6 +32,7 @@ game = {
 
   start: function() {
     game.over = false;
+    game.paused = false;
     game.message = null;
     game.score = 0;
     game.fps = 8;
@@ -49,6 +56,12 @@ game = {
 
     game.message = 'GAME OVER - ' + game.score + ' points';
     $('h1').html(game.message);
+  },
+
+  pause: function() {
+      game.paused = !game.paused;
+      game.message = 'PAUSED - Press esc or p key to continue';
+      $('h1').html(game.message);
   },
 
   drawBox: function(x, y, size, color) {
@@ -108,7 +121,6 @@ game = {
   },
 
   deleteChain: function(row, col) {
-    game.score+= 1/4;
     colour = game.board[col][row];
     game.board[col][row] = 0;
   	var offsets = [-1, 1];
@@ -176,7 +188,7 @@ var blob = {
 
   move: function(e) {
     key = e.keyCode;
-    console.log(key);
+    if (dev) console.log(key);
 
     var row = Math.ceil(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
@@ -186,6 +198,7 @@ var blob = {
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
     else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += (blob.size + game.time)/5;
     else if (key == spacebar) blob.drop();
+    else if (pauseKeys.indexOf(key) > -1) game.pause();
   },
 
   draw: function() {
@@ -198,7 +211,9 @@ var blob = {
   		if (i == 12 || game.board[col][i] != 0) {
   			game.board[col][i-1] = colorArray.indexOf(blob.color);
 			// Check whether a chain is complete
-			if (game.checkConnect(i-1, col) >= 4) {
+            var blobsConnected = game.checkConnect(i-1, col);
+            if (blobsConnected >= 4) {
+                game.score += (blobsConnected - 3);
 				// Chain is complete
 				game.deleteChain(i-1, col);
 				game.fall();
@@ -222,14 +237,10 @@ function init() {
     blob.draw();
 }
 
-var requestAnimationFrame =  window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame;
-
 /* Every tick, the block currently falling should
  * move one square further down and check for collision */
 function loop() {
-  if (game.over == false) {
+  if (game.over == false && game.paused == false) {
     game.resetCanvas();
     game.updateTimer();
     var row = Math.floor(blob.y/blob.size);
@@ -244,7 +255,9 @@ function loop() {
       if (dev) console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
       game.board[col][row] = colorArray.indexOf(blob.color);
       // Check whether a chain is complete
-      if (game.checkConnect(row, col) >= 4) {
+      var blobsConnected = game.checkConnect(row, col);
+      if (blobsConnected >= 4) {
+        game.score += (blobsConnected - 3);
       	// Chain is complete
       	game.deleteChain(row, col);
       	game.fall();
