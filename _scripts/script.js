@@ -9,7 +9,8 @@ var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
 var pauseKeys = [27, 80];
-var rotateCw = ;
+var rotateCw = 68;
+var rotateCcw = 83;
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
