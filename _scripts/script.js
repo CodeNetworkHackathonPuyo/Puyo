@@ -1,23 +1,28 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
-
-var dev = 0;
+canvas.width = 270;
+canvas.height = canvas.width*2;
 
 var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
+
+var dev = 0;
+var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
+
 var blob;
 var blob2;
 
 game = {
-
   score: 0,
   fps: 8,
   over: false,
   message: null,
   board: null,
+  startTime: null,
+  time: null,
 
   start: function() {
     game.over = false;
@@ -25,6 +30,7 @@ game = {
     game.score = 0;
     game.fps = 8;
     game.board = new Array(6);
+    game.startTime = new Date().getTime();
 
     for (var i = 0; i < 6; i++) {
       game.board[i] = new Array(12);
@@ -41,7 +47,7 @@ game = {
     game.over = true;
     $(document).off('keydown', blob.move);
 
-    game.message = 'GAME OVER - PRESS RETRY';
+    game.message = 'GAME OVER - ' + game.score + ' points';
     $('h1').html(game.message);
   },
 
@@ -63,6 +69,11 @@ game = {
         }
       }
     }
+  },
+
+  updateTimer: function() {
+      game.time = parseInt((new Date().getTime()-game.startTime)/1000, 10);
+      $('h1').html(game.time + 's | ' + game.score + ' points');
   },
 
   /* This returns an int, based on how many cells of the same colour are adjacent
@@ -97,6 +108,7 @@ game = {
   },
 
   deleteChain: function(row, col) {
+    game.score+= 1/4;
     colour = game.board[col][row];
     game.board[col][row] = 0;
   	var offsets = [-1, 1];
@@ -149,8 +161,6 @@ game = {
 
 };
 
-var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
-
 var blob = {
 
   size: canvas.width / 6,
@@ -174,7 +184,7 @@ var blob = {
     if (dev) console.log(row + " " + col);
     if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
     else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
-    else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
+    else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += (blob.size + game.time)/5;
     else if (key == spacebar) blob.drop();
   },
 
@@ -206,6 +216,8 @@ function init() {
     //blob2 = Object.create(Blob);
     // $(".retry").click(game.start);
     game.start();
+    requestAnimationFrame(loop);
+
     game.draw();
     blob.draw();
 }
@@ -219,13 +231,14 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
+    game.updateTimer();
     var row = Math.floor(blob.y/blob.size);
     var col = Math.floor(blob.x/blob.size);
     if ((row == 11 ||
       game.board[col][row + 1] == 0) &&
       blob.y < canvas.height - blob.size) {
       // There is nothing below the blob
-      blob.y += blob.size/10;
+      blob.y += (blob.size + game.time)/10;
     } else {
       // Add the location to the board
       if (dev) console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
@@ -254,7 +267,4 @@ function loop() {
   }, 1000 / game.fps);
 };
 
-
-init();
-
-requestAnimationFrame(loop);
+$( document ).ready(init);

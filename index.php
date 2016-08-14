@@ -11,7 +11,7 @@
         <section class=''>
         <button class='retry' ><a href="">Retry</button>
 
-        <canvas id="canvas" width="300" height="600"></canvas>
+        <canvas id="canvas"></canvas>
 
         </section>
     </div>
