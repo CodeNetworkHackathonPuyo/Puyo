@@ -125,6 +125,16 @@ game = {
       $('h1').html(game.time + 's | ' + game.score + ' points | ' + game.chains + ' current combo');
   },
 
+  /* Check for connections, and delete if greater than 4 */
+  checkDelete: function(row, col) {
+    var blobsConnected = game.checkConnect(row, col);
+    if (blobsConnected >= 4) {
+        game.score += (blobsConnected - 3);
+        // Chain is complete
+        game.deleteChain(row, col);
+    }
+  },
+
   /* This returns an int, based on how many cells of the same colour are adjacent
   * to the initial argument to this function. Seen represents already checked cells,
   * to prevent loops */
@@ -239,18 +249,8 @@ var Blob = function blob() {
   	for (var i = 0; i < 13; i++) {
   		if (i == 12 || game.board[col][i] != 0) {
   			game.board[col][i-1] = colorArray.indexOf(self.color);
-			// Check whether a chain is complete
-            var blobsConnected = game.checkConnect(i-1, col);
-            if (blobsConnected >= 4) {
-                game.score += (blobsConnected - 3);
-				// Chain is complete
-				game.deleteChain(i-1, col);
-				game.fall();
-			}
-			// drop a new block
-			self.init(self.type);
-			return;
-  		}
+            return i-1;  		
+        }
   	}
   };
 };
@@ -284,11 +284,27 @@ function move(e) {
         square2.y += square2.size/10;
     } else if (key == spacebar) {
         if (square1.y > square2.y) {
-            square1.drop();
-            square2.drop();
+            var loc1 = square1.drop();
+            var col = square1.x/square1.size;
+            var loc2 = square2.drop();
+            var col2 = square2.x/square2.size;
+            game.checkDelete(loc1, col);
+            game.checkDelete(loc2, col2);
+            game.fall();
+            // drop a new block
+            square1.init(square1.type);
+            square2.init(square2.type);
         } else {
-            square2.drop();
-            square1.drop();
+            var loc1 = square2.drop();
+            var col = square2.x/square2.size;
+            var loc2 = square1.drop();
+            var col2 = square1.x/square1.size;
+            game.checkDelete(loc1, col);
+            game.checkDelete(loc2, col2);
+            game.fall();
+            // drop a new block
+            square1.init(square1.type);
+            square2.init(square2.type);
         }
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
@@ -307,7 +323,9 @@ function rotate(direction) {
     // Determine orientation
     if (row == row2 && col2 > col) {
         // sq1 sq2
-        if (direction == "cw") {
+        if (direction == "cw" &&
+            row < 11 &&
+            game.board[col][row + 1] == 0) {
             square2.x -= square2.size;
             square2.y += square2.size;
         } else if (direction == "ccw") {
@@ -319,7 +337,9 @@ function rotate(direction) {
         if (direction == "cw") {
             square2.x += square2.size;
             square2.y -= square2.size;
-        } else if (direction == "ccw") {
+        } else if (direction == "ccw" &&
+            row < 11 &&
+            game.board[col][row + 1] == 0) {
             square2.x += square2.size;
             square2.y += square2.size;
         }
@@ -327,23 +347,27 @@ function rotate(direction) {
         // sq1
         // sq2
         if (direction == "cw" &&
-            col != 0) {
+            col != 0 &&
+            game.board[col - 1][row] == 0) {
             square2.x -= square2.size;
             square2.y -= square2.size;
         } else if (direction == "ccw" &&
-            col != 5) {
+            col != 5 &&
+            game.board[col + 1][row] == 0) {
             square2.x += square2.size;
             square2.y -= square2.size;
         }
     } else if (col == col2 && row2 < row) {
         // sq2
         // sq1
-        if (direction == "cw" &&
-            col != 5) {
+        if (direction == "cw" && 
+            col != 5 &&
+            game.board[col + 1][row] == 0) {
             square2.x += square2.size;
             square2.y += square2.size;
-        } else if (direction == "ccw" &&
-            col != 0) {
+        } else if (direction == "ccw" && 
+            col != 0 &&
+            game.board[col - 1][row] == 0) {
             square2.x -= square2.size;
             square2.y += square2.size;
         }
@@ -391,25 +415,30 @@ function loop() {
       square1.y += square1.size/10;
       square2.y += square2.size/10;
     } else {
-      // Add the location to the board
-      if (dev) console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
-      game.board[col][row] = colorArray.indexOf(square1.color);
-      // Check whether a chain is complete
-      var blobsConnected = game.checkConnect(row, col);
-      if (blobsConnected >= 4) {
-        game.score += (blobsConnected - 3);
-      	// Chain is complete
-      	game.deleteChain(row, col);
-      	game.fall();
-      }
+        // Add the location to the board
+        if (dev) console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
+        if (col == col2) {
+            game.board[col][row] = colorArray.indexOf(square1.color);
+            game.board[col2][row2] = colorArray.indexOf(square2.color);
+        } else if (game.board[col][row + 1] != 0) {
+            game.board[col][row] = colorArray.indexOf(square1.color);
+            square2.drop();
+        } else if (game.board[col2][row2 + 1] != 0) {
+            game.board[col2][row2] = colorArray.indexOf(square2.color);
+            square1.drop();
+        }
+        game.checkDelete(row, col);
+        game.checkDelete(row2, col2);
+        game.fall();
 
-      if (row == 0) {
-          game.stop();
-          console.log(game.over);
-          return;
-      }
-      // drop a new block
-      square1.init(1);
+        if (row == 0) {
+            game.stop();
+            console.log(game.over);
+            return;
+        }
+        // drop a new block
+        square1.init(1);
+        square2.init(2);
     }
 
     square1.draw();
