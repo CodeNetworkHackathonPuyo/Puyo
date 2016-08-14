@@ -9,7 +9,8 @@
     <div class="content">
         <h1>Puyo Puyo</h1>
         <section class=''>
-        <button class='retry' ><a href="">Retry</button>
+        <img id='sonic' src='<?=$site?>/_images/sonic.png' />
+        <button class='retry' ><a href="">Retry</a></button>
 
         <canvas id="canvas"></canvas>
 

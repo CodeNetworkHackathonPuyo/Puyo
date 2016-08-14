@@ -11,6 +11,9 @@ h1{
     font-size: 2em;
 }
 
+img{
+    display: none;
+}
 
 button{
     border-radius: 1em;

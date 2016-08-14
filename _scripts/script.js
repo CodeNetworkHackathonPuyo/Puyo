@@ -69,9 +69,40 @@ game = {
       $('h1').html(game.message);
   },
 
-  drawBox: function(x, y, size, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x,y, size, size);
+  drawSprite: function(x, y, size, color) {
+    var mainImg = $('#sonic')[0];
+    var sx = 60;
+    var sy = 223;
+    var sw = 65;
+    var sh = 65;
+    var dx = x;
+    var dy = y;
+    var dw = size;
+    var dh = size;
+
+    switch (color) {
+        case 'red':
+            sx = 60 + sw*0;
+            break;
+        case 'green':
+            sx = 60 + sw*1 + 2;
+            break;
+        case 'blue':
+            sx = 60 + sw*2 + 2;
+            break;
+        case 'yellow':
+            sx = 60 + sw*3 + 1;
+            break;
+        case 'purple':
+            sx = 60 + sw*4;
+            break;
+        default:
+
+    }
+
+    console.log(mainImg+', '+sx+', '+sy+', '+sw+', '+sh+', '+dx+', '+dy+', '+dw+', '+dh)
+
+    ctx.drawImage(mainImg, sx, sy, sw, sh, dx, dy, dw, dh);
   },
 
   resetCanvas: function() {
@@ -82,7 +113,7 @@ game = {
     for (var col = 0; col < 6; col++) {
       for (var row = 0; row < 12; row++) {
         if (game.board[col][row] != 0) {
-          game.drawBox(col * square1.size, row * square1.size, square1.size,
+          game.drawSprite(col * square1.size, row * square1.size, square1.size,
             colorArray[game.board[col][row]]);
         }
       }
@@ -200,7 +231,7 @@ var Blob = function blob() {
   };
 
   this.draw = function() {
-    game.drawBox(parseInt(self.x), parseInt(self.y), self.size, self.color);
+    game.drawSprite(parseInt(self.x), parseInt(self.y), self.size, self.color);
   };
 
   this.drop = function() {
@@ -279,25 +310,41 @@ function rotate(direction) {
         if (direction == "cw") {
             square2.x -= square2.size;
             square2.y += square2.size;
+        } else if (direction == "ccw") {
+            square2.x -= square2.size;
+            square2.y -= square2.size;
         }
     } else if (row == row2 && col2 < col) {
         // sq2 sq1
         if (direction == "cw") {
             square2.x += square2.size;
             square2.y -= square2.size;
+        } else if (direction == "ccw") {
+            square2.x += square2.size;
+            square2.y += square2.size;
         }
     } else if (col == col2 && row2 > row) {
         // sq1
         // sq2
-        if (direction == "cw") {
+        if (direction == "cw" &&
+            col != 0) {
             square2.x -= square2.size;
+            square2.y -= square2.size;
+        } else if (direction == "ccw" &&
+            col != 5) {
+            square2.x += square2.size;
             square2.y -= square2.size;
         }
     } else if (col == col2 && row2 < row) {
         // sq2
         // sq1
-        if (direction == "cw") {
+        if (direction == "cw" &&
+            col != 5) {
             square2.x += square2.size;
+            square2.y += square2.size;
+        } else if (direction == "ccw" &&
+            col != 0) {
+            square2.x -= square2.size;
             square2.y += square2.size;
         }
     }

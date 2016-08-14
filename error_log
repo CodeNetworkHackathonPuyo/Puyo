@@ -1,0 +1,6 @@
+[13-Aug-2016 07:46:59 UTC] PHP Warning:  include(_includes/head.php): failed to open stream: No such file or directory in /home/smallpro/public_html/puyo/index.php on line 3
+[13-Aug-2016 07:46:59 UTC] PHP Warning:  include(_includes/head.php): failed to open stream: No such file or directory in /home/smallpro/public_html/puyo/index.php on line 3
+[13-Aug-2016 07:46:59 UTC] PHP Warning:  include(): Failed opening '_includes/head.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/smallpro/public_html/puyo/index.php on line 3
+[13-Aug-2016 09:53:49 UTC] PHP Warning:  include(_includes/footer.php): failed to open stream: No such file or directory in /home/smallpro/public_html/puyo/index.php on line 18
+[13-Aug-2016 09:53:49 UTC] PHP Warning:  include(_includes/footer.php): failed to open stream: No such file or directory in /home/smallpro/public_html/puyo/index.php on line 18
+[13-Aug-2016 09:53:49 UTC] PHP Warning:  include(): Failed opening '_includes/footer.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/smallpro/public_html/puyo/index.php on line 18
