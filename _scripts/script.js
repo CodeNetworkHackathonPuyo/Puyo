@@ -6,8 +6,8 @@ var downKey = 40;
 var leftKey = 37;
 var rightKey = 39;
 var spacebar = 32;
-var blob;
-var blob2;
+var square1;
+var square2;
 var dev = 1;
 
 game = {
@@ -34,13 +34,13 @@ game = {
     }
 
     $(".retry").click(game.start);
-    $(document).keydown(blob.move);
-    blob.init();
+    $(document).keydown(square1.move);
+    square1.init();
   },
 
   stop: function() {
     game.over = true;
-    $(document).off('keydown', blob.move);
+    $(document).off('keydown', square1.move);
 
     game.message = 'GAME OVER - PRESS RETRY';
     $('h1').html(game.message);
@@ -59,7 +59,7 @@ game = {
     for (var col = 0; col < 6; col++) {
       for (var row = 0; row < 12; row++) {
         if (game.board[col][row] != 0) {
-          game.drawBox(col * blob.size, row * blob.size, blob.size,
+          game.drawBox(col * square1.size, row * square1.size, square1.size,
             colorArray[game.board[col][row]]);
         }
       }
@@ -152,42 +152,43 @@ game = {
 
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
-var blob = {
+var Blob = function blob() {
 
-  size: canvas.width / 6,
-  x: null,
-  y: null,
-  color: colorArray[Math.floor(Math.random() * colorArray.length)],
+  this.size: canvas.width / 6;
+  this.x: null;
+  this.y: null;
+  this.color: colorArray[Math.floor(Math.random() * colorArray.length)];
+  var self = this;
 
-  init: function() {
-    blob.color = colorArray[Math.floor(Math.random() * (colorArray.length-1)) + 1];
-    blob.x = canvas.width / 2;
-    blob.y = 0;
-  },
+  this.init: function() {
+    self.color = colorArray[Math.floor(Math.random() * (colorArray.length-1)) + 1];
+    self.x = canvas.width / 2;
+    self.y = 0;
+  };
 
-  move: function(e) {
+  this.move: function(e) {
     key = e.keyCode;
     console.log(key);
 
-    var row = Math.ceil(blob.y/blob.size);
-    var col = Math.floor(blob.x/blob.size);
+    var row = Math.ceil(self.y/self.size);
+    var col = Math.floor(self.x/self.size);
 
     console.log(row + " " + col);
-    if (key == leftKey && blob.x >= blob.size && game.board[col - 1][row] == 0) blob.x -= blob.size;
-    else if (key == rightKey && blob.x < canvas.width - blob.size && game.board[col + 1][row] == 0) blob.x += blob.size;
-    else if (key == downKey && blob.y < canvas.height - blob.size) blob.y += blob.size/10;
-    else if (key == spacebar) blob.drop();
-  },
+    if (key == leftKey && self.x >= self.size && game.board[col - 1][row] == 0) self.x -= self.size;
+    else if (key == rightKey && self.x < canvas.width - self.size && game.board[col + 1][row] == 0) self.x += self.size;
+    else if (key == downKey && self.y < canvas.height - self.size) self.y += self.size/10;
+    else if (key == spacebar) self.drop();
+  };
 
-  draw: function() {
-    game.drawBox(parseInt(blob.x), parseInt(blob.y), blob.size, blob.color);
-  },
+  this.draw: function() {
+    game.drawBox(parseInt(self.x), parseInt(self.y), self.size, self.color);
+  };
 
-  drop: function() {
-  	var col = Math.floor(blob.x/blob.size);
+  this.drop: function() {
+  	var col = Math.floor(self.x/self.size);
   	for (var i = 0; i < 13; i++) {
   		if (i == 12 || game.board[col][i] != 0) {
-  			game.board[col][i-1] = colorArray.indexOf(blob.color);
+  			game.board[col][i-1] = colorArray.indexOf(self.color);
 			// Check whether a chain is complete
 			if (game.checkConnect(i-1, col) >= 4) {
 				// Chain is complete
@@ -195,16 +196,16 @@ var blob = {
 				game.fall();
 			}
 			// drop a new block
-			blob.init();
+			self.init();
 			return;
   		}
   	}
-  }
+  };
 };
 
 function init() {
-    //blob = Object.create(Blob);
-    //blob2 = Object.create(Blob);
+    var square1 = new Blob();
+    var square2 = new Blob();
     game.start();
     game.draw();
     blob.draw();
@@ -219,17 +220,17 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 function loop() {
   if (game.over == false) {
     game.resetCanvas();
-    var row = Math.floor(blob.y/blob.size);
-    var col = Math.floor(blob.x/blob.size);
+    var row = Math.floor(square1.y/square1.size);
+    var col = Math.floor(square1.x/square1.size);
     if ((row == 11 ||
       game.board[col][row + 1] == 0) &&
-      blob.y < canvas.height - blob.size) {
+      square1.y < canvas.height - square1.size) {
       // There is nothing below the blob
-      blob.y += blob.size/10;
+      square1.y += square1.size/10;
     } else {
       // Add the location to the board
-      console.log(col + " " + row + " " + colorArray.indexOf(blob.color));
-      game.board[col][row] = colorArray.indexOf(blob.color);
+      console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
+      game.board[col][row] = colorArray.indexOf(square1.color);
       // Check whether a chain is complete
       if (game.checkConnect(row, col) >= 4) {
       	// Chain is complete
@@ -243,10 +244,10 @@ function loop() {
           return;
       }
       // drop a new block
-      blob.init();
+      square1.init();
     }
 
-    blob.draw();
+    square1.draw();
     game.draw();
   }
   setTimeout(function() {
