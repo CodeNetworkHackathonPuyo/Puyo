@@ -54,6 +54,7 @@ game = {
 
 
     $(document).keydown(move);
+    $('#canvas').on('touchstart', touch);
     square1.init(1);
   },
 
@@ -342,6 +343,15 @@ function move(e) {
         sprite = !sprite;
     }
 };
+
+function touch(e) {
+  console.log(e);
+  if (e.pageX > canvas.width/2) {
+    move(rightKey);
+  } else {
+    move(leftKey);
+  }
+}
 
 function rotate(direction) {
     var row = Math.ceil(square1.y/square1.size);
