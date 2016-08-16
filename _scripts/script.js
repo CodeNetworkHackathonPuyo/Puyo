@@ -373,10 +373,14 @@ function move(e) {
 
 function touch(e) {
   console.log(e);
-  if (e.pageX > canvas.width/2) {
-    move(rightKey);
-  } else {
-    move(leftKey);
+  changed = e.changedTouches;
+  for (var i = 0; i < changed.length; i++) {
+    var evt = changed[i];
+    if (evt.pageX > canvas.width/2) {
+      move(rightKey);
+    } else {
+      move(leftKey);
+    }
   }
 }
 
