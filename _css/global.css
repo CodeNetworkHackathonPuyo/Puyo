@@ -60,3 +60,7 @@ canvas{
     border: 2px solid black;
     margin: 0 calc(50% - 150px);
 }
+
+.mobile{
+    display: none;
+}

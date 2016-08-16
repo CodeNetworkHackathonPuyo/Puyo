@@ -52,15 +52,13 @@ game = {
       }
     }
 
-
-    $(document).keydown(move);
-    $('#canvas').on('touchstart', touch);
+    $(document).keydown(keyPress);
     square1.init(1);
   },
 
   stop: function() {
     game.over = true;
-    $(document).off('keydown', square1.move);
+    $(document).off('keydown', keyPress);
 
     game.message = 'GAME OVER - ' + game.score + ' points';
     $('h1').html(game.message);
@@ -294,11 +292,13 @@ var Blob = function blob() {
 };
 
 function init() {
+    if ('ontouchstart' in document.documentElement) touch();
+
     square1 = new Blob();
     square2 = new Blob();
     square1.init(1)
     square2.init(2);
-    // $(".retry").click(game.start);
+
     game.start();
     requestAnimationFrame(loop);
 
@@ -307,8 +307,23 @@ function init() {
     square2.draw();
 };
 
-function move(e) {
-	key = e.keyCode;
+function touch() {
+    canvas.width = 150;
+    canvas.height = canvas.width*2;
+
+    $('h1').css('font-size', '15px');
+    $('.mobile').css('display', 'initial');
+    $('.left').on('click tap', function() { move(leftKey); });
+    $('.right').on('click tap', function() { move(rightKey); });
+    $('.drop').on('click tap', function() { move(spacebar); });
+    $('.rotate').on('click tap', function() { move(rotateCw); });
+}
+
+function keyPress(e) {
+    move(e.keyCode);
+}
+
+function move(key) {
 	console.log(key);
 
 	if (canMove("left", key)) {
@@ -370,15 +385,6 @@ function move(e) {
         sprite = spriteArray[spriteSwitch.indexOf(key)];
     }
 };
-
-function touch(e) {
-  console.log(e);
-  if (e.pageX > canvas.width/2) {
-    move(rightKey);
-  } else {
-    move(leftKey);
-  }
-}
 
 function rotate(direction) {
     var row = Math.ceil(square1.y/square1.size);

@@ -17,6 +17,11 @@
 
         <canvas id="canvas"></canvas>
 
+        <button class='left mobile'>Left</button>
+        <button class='right mobile'>Right</button>
+        <button class='drop mobile'>Drop</button>
+        <button class='rotate mobile'>Rotate</button>
+
         </section>
     </div>
     <?php include "_includes/footer.php"; ?>
