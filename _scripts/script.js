@@ -21,7 +21,6 @@ var square1;
 var square2;
 var spriteArray = ['boxes', 'puyo', 'sonic'];
 var sprite = spriteArray[0];
-
 var dev = 0;
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
 
@@ -55,6 +54,7 @@ game = {
 
 
     $(document).keydown(move);
+    $('#canvas').on('touchstart', touch);
     square1.init(1);
   },
 
@@ -370,6 +370,15 @@ function move(e) {
         sprite = spriteArray[spriteSwitch.indexOf(key)];
     }
 };
+
+function touch(e) {
+  console.log(e);
+  if (e.pageX > canvas.width/2) {
+    move(rightKey);
+  } else {
+    move(leftKey);
+  }
+}
 
 function rotate(direction) {
     var row = Math.ceil(square1.y/square1.size);
