@@ -11,6 +11,7 @@ var spacebar = 32;
 var pauseKeys = [27, 80];
 var rotateCw = 68;
 var rotateCcw = 83;
+var spriteSwitch = [49, 50, 51];
 
 var requestAnimationFrame =  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -18,6 +19,8 @@ var requestAnimationFrame =  window.requestAnimationFrame ||
 
 var square1;
 var square2;
+var spriteArray = ['boxes', 'puyo', 'sonic'];
+var sprite = spriteArray[0];
 
 var dev = 0;
 var colorArray = ['empty', 'blue', 'red', 'green', 'yellow', 'purple'];
@@ -70,39 +73,66 @@ game = {
   },
 
   drawSprite: function(x, y, size, color) {
-    var mainImg = $('#sonic')[0];
-    var sx = 60;
-    var sy = 223;
-    var sw = 65;
-    var sh = 65;
-    var dx = x;
-    var dy = y;
-    var dw = size;
-    var dh = size;
+    var sx = 60, sy = 223;
+    var sw = 65, sh = 65;
 
-    switch (color) {
-        case 'red':
-            sx = 60 + sw*0;
+    switch (sprite) {
+        case 'boxes':
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, size, size);
             break;
-        case 'green':
-            sx = 60 + sw*1 + 2;
+
+        case 'puyo':
+            var puyoImg = $('#puyo')[0];
+
+            switch (color) {
+                case 'red':
+                    sx = 60 + sw*0 + 5;
+                    break;
+                case 'green':
+                    sx = 60 + sw*1 + 3;
+                    break;
+                case 'blue':
+                    sx = 60 + sw*2 + 4;
+                    break;
+                case 'yellow':
+                    sx = 60 + sw*3 + 1;
+                    break;
+                case 'purple':
+                    sx = 60 + sw*4;
+                    break;
+                default:
+            }
+            ctx.drawImage(puyoImg, sx, sy, sw, sh, x, y, size, size);
             break;
-        case 'blue':
-            sx = 60 + sw*2 + 2;
+
+        case 'sonic':
+            var sonicImg = $('#sonic')[0];
+
+            switch (color) {
+                case 'red':
+                    sx = 60 + sw*0;
+                    break;
+                case 'green':
+                    sx = 60 + sw*1 + 2;
+                    break;
+                case 'blue':
+                    sx = 60 + sw*2 + 2;
+                    break;
+                case 'yellow':
+                    sx = 60 + sw*3 + 1;
+                    break;
+                case 'purple':
+                    sx = 60 + sw*4;
+                    break;
+                default:
+            }
+            ctx.drawImage(sonicImg, sx, sy, sw, sh, x, y, size, size);
             break;
-        case 'yellow':
-            sx = 60 + sw*3 + 1;
-            break;
-        case 'purple':
-            sx = 60 + sw*4;
-            break;
+
         default:
-
     }
 
-    console.log(mainImg+', '+sx+', '+sy+', '+sw+', '+sh+', '+dx+', '+dy+', '+dw+', '+dh)
-
-    ctx.drawImage(mainImg, sx, sy, sw, sh, dx, dy, dw, dh);
   },
 
   resetCanvas: function() {
@@ -125,13 +155,17 @@ game = {
       $('h1').html(game.time + 's | ' + game.score + ' points | ' + game.chains + ' current combo');
   },
 
-  /* Check for connections, and delete if greater than 4 */
+  /* Check for connections, and delete if greater than 4.
+   * Returns true is items were deleted */
   checkDelete: function(row, col) {
     var blobsConnected = game.checkConnect(row, col);
     if (blobsConnected >= 4) {
         game.score += (blobsConnected - 3);
         // Chain is complete
         game.deleteChain(row, col);
+        return true;
+    } else {
+        return false;
     }
   },
 
@@ -223,6 +257,7 @@ game = {
 var Blob = function blob() {
 
   this.size = canvas.width / 6;
+  this.speed = (this.size + game.time)/10;
   this.x = null;
   this.y = null;
   this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
@@ -237,10 +272,13 @@ var Blob = function blob() {
     	self.x = canvas.width / 2 - self.size;
     }
     self.type = type;
-    self.y = 0;
+    self.y = -self.size;
   };
 
   this.draw = function() {
+    if (sprite == 'sonic') self.speed = (this.size + game.time)/5;
+    else self.speed = (this.size + game.time)/10;
+
     game.drawSprite(parseInt(self.x), parseInt(self.y), self.size, self.color);
   };
 
@@ -249,7 +287,7 @@ var Blob = function blob() {
   	for (var i = 0; i < 13; i++) {
   		if (i == 12 || game.board[col][i] != 0) {
   			game.board[col][i-1] = colorArray.indexOf(self.color);
-            return i-1;  		
+            return i-1;
         }
   	}
   };
@@ -280,31 +318,46 @@ function move(e) {
         square1.x += square1.size;
         square2.x += square2.size;
     } else if (canMove("down", key)) {
-        square1.y += square1.size/10;
-        square2.y += square2.size/10;
+        square1.y += square1.speed*4;
+        square2.y += square2.speed*4;
     } else if (key == spacebar) {
         if (square1.y > square2.y) {
             var loc1 = square1.drop();
             var col = square1.x/square1.size;
             var loc2 = square2.drop();
             var col2 = square2.x/square2.size;
-            game.checkDelete(loc1, col);
-            game.checkDelete(loc2, col2);
-            game.fall();
+            var wasDeleted = game.checkDelete(loc1, col);
+            wasDeleted |= game.checkDelete(loc2, col2);
+            // Wrap the following lines in a setTimeout()
+            var time = wasDeleted ? 500 : 0;
             // drop a new block
             square1.init(square1.type);
             square2.init(square2.type);
+            game.resetCanvas();
+            game.draw();
+            game.pause();
+            setTimeout(function() {
+                game.fall();
+                game.pause();
+            }, time);
         } else {
             var loc1 = square2.drop();
             var col = square2.x/square2.size;
             var loc2 = square1.drop();
             var col2 = square1.x/square1.size;
-            game.checkDelete(loc1, col);
-            game.checkDelete(loc2, col2);
-            game.fall();
+            var wasDeleted = game.checkDelete(loc1, col);
+            wasDeleted |= game.checkDelete(loc2, col2);
+            var time = wasDeleted ? 500 : 0;
             // drop a new block
             square1.init(square1.type);
             square2.init(square2.type);
+            game.resetCanvas();
+            game.draw();
+            game.pause();
+            setTimeout(function() {
+                game.fall();
+                game.pause();
+            }, time);
         }
     } else if (pauseKeys.indexOf(key) > -1) {
         game.pause();
@@ -312,6 +365,9 @@ function move(e) {
         rotate("cw");
     } else if (key == rotateCcw) {
         rotate("ccw");
+    } else if (spriteSwitch.indexOf(key) > -1) {
+        console.log(spriteSwitch.indexOf(key));
+        sprite = spriteArray[spriteSwitch.indexOf(key)];
     }
 };
 
@@ -360,12 +416,12 @@ function rotate(direction) {
     } else if (col == col2 && row2 < row) {
         // sq2
         // sq1
-        if (direction == "cw" && 
+        if (direction == "cw" &&
             col != 5 &&
             game.board[col + 1][row] == 0) {
             square2.x += square2.size;
             square2.y += square2.size;
-        } else if (direction == "ccw" && 
+        } else if (direction == "ccw" &&
             col != 0 &&
             game.board[col - 1][row] == 0) {
             square2.x -= square2.size;
@@ -412,8 +468,8 @@ function loop() {
     	col != col2 && game.board[col][row + 1] == 0 && game.board[col2][row2 + 1] == 0) &&
       Math.max(square1.y, square2.y) < canvas.height - square1.size) {
       // There is nothing below the blob
-      square1.y += square1.size/10;
-      square2.y += square2.size/10;
+      square1.y += square1.speed;
+      square2.y += square2.speed;
     } else {
         // Add the location to the board
         if (dev) console.log(col + " " + row + " " + colorArray.indexOf(square1.color));
@@ -427,9 +483,18 @@ function loop() {
             game.board[col2][row2] = colorArray.indexOf(square2.color);
             square1.drop();
         }
-        game.checkDelete(row, col);
-        game.checkDelete(row2, col2);
-        game.fall();
+        var wasDeleted = game.checkDelete(row, col);
+        wasDeleted |= game.checkDelete(row2, col2);
+        // Wrap the following lines in a setTimeout()
+        var time = wasDeleted ? 200 : 0;
+        // drop a new block
+        game.resetCanvas();
+        game.draw();
+        game.pause();
+        setTimeout(function() {
+            game.fall();
+            game.pause();
+        }, time);
 
         if (row == 0) {
             game.stop();

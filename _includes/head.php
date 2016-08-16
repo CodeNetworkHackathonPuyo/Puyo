@@ -1,4 +1,4 @@
-<?php	$site = 'http://smallprojects.info/puyo2'	?>
+<?php	$site = 'http://smallprojects.info/puyo'	?>
 <!-- <?=$site?> -->
 
 <meta charset="utf-8">
@@ -24,3 +24,5 @@
 
 <link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Walter+Turncoat' 	rel='stylesheet' type='text/css'>
+
+<?php $skins = ['puyo', 'sonic']; ?>
